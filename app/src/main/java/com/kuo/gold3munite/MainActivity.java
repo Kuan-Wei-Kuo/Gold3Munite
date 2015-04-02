@@ -1,6 +1,7 @@
 package com.kuo.gold3munite;
 
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +20,9 @@ public class MainActivity extends ActionBarActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private ListView listView;
+
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private FragmentTransaction  fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,9 @@ public class MainActivity extends ActionBarActivity {
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
             switch (i){
                 case 0:
+                    EnglishTestFragment englishTestFragment = new EnglishTestFragment();
+                    fragmentTransaction.replace(R.id.contentFrame, englishTestFragment, "englishTestFragment");
+                    fragmentTransaction.commit();
                     break;
                 case 1:
                     break;
