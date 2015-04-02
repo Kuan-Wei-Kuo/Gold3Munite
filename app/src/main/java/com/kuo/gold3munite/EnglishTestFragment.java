@@ -9,6 +9,8 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,11 +43,13 @@ public class EnglishTestFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
 
         View view = inflater.inflate(R.layout.fragment_english_test, container, false);
 
@@ -59,6 +63,12 @@ public class EnglishTestFragment extends Fragment {
                 mediaPlayer.start();
             }
         });
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setSupportActionBar(mainActivity.toolbar);
+        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mainActivity.getSupportActionBar().setHomeButtonEnabled(true);
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         handler.postDelayed(runTimerStop, 1000);
 
