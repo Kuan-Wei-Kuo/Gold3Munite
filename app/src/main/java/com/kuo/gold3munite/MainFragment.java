@@ -8,11 +8,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 /**
  * Created by User on 2015/4/2.
  */
 public class MainFragment extends Fragment {
+
+    private WebView webView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -27,6 +31,12 @@ public class MainFragment extends Fragment {
             getFragmentManager().popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
+        webView = (WebView) view.findViewById(R.id.webView);
+        webView.setWebViewClient(webViewClient);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.loadUrl("file:///android_asset/MathFormula_2.html");
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.toolbar.setTitle("黃金三分鐘");
         mainActivity.setSupportActionBar(mainActivity.toolbar);
@@ -35,4 +45,12 @@ public class MainFragment extends Fragment {
 
         return view;
     }
+
+    private WebViewClient webViewClient = new WebViewClient() {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
+    };
 }
