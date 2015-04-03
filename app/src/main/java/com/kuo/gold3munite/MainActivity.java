@@ -1,5 +1,6 @@
 package com.kuo.gold3munite;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -49,6 +50,9 @@ public class MainActivity extends ActionBarActivity {
         fragmentTransaction.replace(R.id.contentFrame, mainFragment, "mainFragment");
         fragmentTransaction.commit();
 
+        Intent i = new Intent();
+        i.setClass(this, G3MService.class);
+        this.startService(i);
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
