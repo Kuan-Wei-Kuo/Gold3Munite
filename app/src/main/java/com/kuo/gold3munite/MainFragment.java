@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +12,19 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by User on 2015/4/2.
  */
 public class MainFragment extends Fragment {
 
     private WebView webView;
+    private SlidingTabLayout slidingTabLayout;
+    private ViewPager viewPager;
+    private List<Fragment> fragmentList = new ArrayList<Fragment>();
+    private List<String>   titleList = new ArrayList<String>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -30,6 +38,21 @@ public class MainFragment extends Fragment {
             int backStackId = getFragmentManager().getBackStackEntryAt(i).getId();
             getFragmentManager().popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
+
+        fragmentList.add(new EnglishFragment());
+        fragmentList.add(new MathFragment());
+        fragmentList.add(new EnglishTestFragment());
+
+        titleList.add("英文");
+        titleList.add("數學");
+        titleList.add("物理");
+
+        viewPager = (ViewPager) view.findViewById(R.id.viewPager);
+        slidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.slidingTabLayout);
+
+        viewPager.setAdapter(new G3MPagerAdapter(getChildFragmentManager(), fragmentList, titleList));
+        slidingTabLayout.setDistributeEvenly(true);
+        slidingTabLayout.setViewPager(viewPager);
 
         /*webView = (WebView) view.findViewById(R.id.webView);
         webView.setWebViewClient(webViewClient);

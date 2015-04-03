@@ -50,9 +50,9 @@ public class MainActivity extends ActionBarActivity {
         fragmentTransaction.replace(R.id.contentFrame, mainFragment, "mainFragment");
         fragmentTransaction.commit();
 
-        Intent i = new Intent();
+        /*Intent i = new Intent();
         i.setClass(this, G3MService.class);
-        this.startService(i);
+        this.startService(i);*/
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
