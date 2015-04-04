@@ -1,6 +1,5 @@
 package com.kuo.gold3munite;
 
-import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -8,7 +7,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -95,6 +93,11 @@ public class MainActivity extends ActionBarActivity {
                 case 1:
                     break;
                 case 2:
+                    SettingFragment settingFragment = new SettingFragment();
+                    fragmentTransaction.replace(R.id.contentFrame, settingFragment, "settingFragment");
+                    fragmentTransaction.addToBackStack("mainFragment");
+                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    fragmentTransaction.commit();
                     break;
             }
         }

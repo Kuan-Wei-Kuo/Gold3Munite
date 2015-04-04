@@ -18,7 +18,7 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     public static final int ENGLISH = 0;
     public static final int SCIENCE = 1;
-    public static final int PHYSICAL = 2;
+    public static final int SETTING = 2;
 
     private ViewHolder viewHolder;
     private List<ListItem> listItems = new ArrayList<ListItem>();
@@ -48,6 +48,11 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
             viewHolder.webView.setWebViewClient(webViewClient);
             viewHolder.webView.getSettings().setJavaScriptEnabled(true);
             viewHolder.webView.setScrollContainer(false);
+        }else if(TYPE == SETTING) {
+            viewHolder.timerText = (TextView) view.findViewById(R.id.timerText);
+            viewHolder.timerTypeText = (TextView) view.findViewById(R.id.timerTypeText);
+            viewHolder.typeText = (TextView) view.findViewById(R.id.typeText);
+            viewHolder.weekText = (TextView) view.findViewById(R.id.weekText);
         }
 
         return viewHolder;
@@ -64,6 +69,10 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         }else if(TYPE == SCIENCE){
             holder.scienceText.setText(listItems.get(position).scienceText);
             holder.webView.loadUrl(listItems.get(position).url);
+        }else if(TYPE == SETTING) {
+            holder.timerText.setText(listItems.get(position).timerText);
+            holder.timerTypeText.setText(listItems.get(position).timerTypeText);
+            holder.typeText.setText(listItems.get(position).typeText);
         }
     }
 

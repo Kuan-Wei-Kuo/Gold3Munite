@@ -4,5 +4,8 @@
     <color name="blue_2">#ff66bbff</color>
     <color name="blue_3">#ff269dff</color>
     <color name="white_1">#fff0f0f0</color>
+    <color name="white_2">#ffdcdcdc</color>
     <color name="black_1">#ff2c2c2c</color>
+    <color name="black_2">#b82f2f2f</color>
+    <color name="black_3">#99a5a5a5</color>
 </resources>

@@ -10,7 +10,7 @@ import android.widget.TextView;
  */
 public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-    public TextView englishText, chineseText, exampleEnglishText, exampleChineseText, scienceText;
+    public TextView englishText, chineseText, exampleEnglishText, exampleChineseText, scienceText, timerText, timerTypeText, typeText, weekText;
     public WebView webView;
 
     public ViewHolder(View itemView) {

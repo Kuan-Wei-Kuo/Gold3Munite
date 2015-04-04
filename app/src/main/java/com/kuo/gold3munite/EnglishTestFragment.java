@@ -65,6 +65,7 @@ public class EnglishTestFragment extends Fragment {
         });
 
         MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.toolbar.setTitle("黃金三分鐘 - 測驗");
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mainActivity.getSupportActionBar().setHomeButtonEnabled(true);
