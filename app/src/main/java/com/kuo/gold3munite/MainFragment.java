@@ -41,7 +41,7 @@ public class MainFragment extends Fragment {
 
         fragmentList.add(new EnglishFragment());
         fragmentList.add(new MathFragment());
-        fragmentList.add(new EnglishTestFragment());
+        fragmentList.add(new PhysicsFragment());
 
         titleList.add("英文");
         titleList.add("數學");

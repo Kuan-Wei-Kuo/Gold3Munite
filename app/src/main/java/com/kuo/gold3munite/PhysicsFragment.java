@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by User on 2015/4/3.
+ * Created by User on 2015/4/4.
  */
-public class MathFragment extends Fragment {
+public class PhysicsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private G3MRecyclerAdapter g3MRecyclerAdapter;
@@ -31,7 +31,7 @@ public class MathFragment extends Fragment {
         for (int i = 0; i < 5 ; i++){
             ListItem listItem = new ListItem();
             listItem.scienceText = "";
-            listItem.url = "file:///android_asset/MathFormula/MathFormula_"+ (i+1) +".html";
+            listItem.url = "file:///android_asset/PhysicsFormula/physics_f"+ (i+1) +".JPG";
             listItems.add(listItem);
         }
 

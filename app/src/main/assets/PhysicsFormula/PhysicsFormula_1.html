@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+	</script><script src = "http://www.parsecdn.com/js/parse-1.4.0.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script type="text/javascript">
+		Parse.initialize("ym2rSKJC7bcEU3l7qS76GP83KBQrNCG8Dn2y6Nay", "m2EAcl5pBDtfU4l4imadlxhHVxAxItdchZiKJ19I");
+		var GameScore = Parse.Object.extend("Gold3MuniteScience");
+		var query = new Parse.Query(GameScore);
+		var mathImage = new Image();
+		query.get("Y16S2clElS", {
+		  success: function(gameScore) {
+		    // The object was retrieved successfully.
+		    //document.write("The object was retrieved successfully, " + gameScore.get("numText"));
+		    //mathImage.src = gameScore.get("MathImage").url();
+		    var photo = gameScore.get("PhysicsImage");
+		    document.getElementById("physicsImage").src = photo.url();
+		    //document.write(Image);
+		  },
+		  error: function(object, error) {
+		    // The object was not retrieved successfully.
+		    // error is a Parse.Error with an error code and description.
+		  }
+		});
+	</script>
+</head>
+	
+<body>
+	<img id="physicsImage" src="http://files.parsetfss.com/dd89110c-a37f-4ebe-a546-e8b9058da027/tfss-66bd5863-e8f1-460c-896d-3039c3c2e164-physics_f1.JPG" style="margin:0px auto;display:block"/>
+</body>
+</html>
