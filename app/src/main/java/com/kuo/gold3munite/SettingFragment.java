@@ -6,9 +6,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +52,6 @@ public class SettingFragment extends Fragment {
         mainActivity.toolbar.setTitle("黃金三分鐘 - 設定");
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mainActivity.getSupportActionBar().setHomeButtonEnabled(true);
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         return view;

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -21,7 +22,7 @@ public class MainActivity extends ActionBarActivity {
     public DrawerLayout drawerLayout;
     public ActionBarDrawerToggle actionBarDrawerToggle;
     private ListView listView;
-
+    private boolean setMenuEnable = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +35,6 @@ public class MainActivity extends ActionBarActivity {
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         actionBarDrawerToggle.syncState();
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
-
         String[] drawerMenu = {"測驗", "統計", "設定"};
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.drawer_list_item, drawerMenu);
         listView.setAdapter(adapter);
@@ -57,21 +57,33 @@ public class MainActivity extends ActionBarActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        if(fragmentManager.getBackStackEntryCount() > 0){
-            fragmentManager.popBackStack();
-        }else{
-            if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-                return true;
-            }
+        switch(item.getItemId()){
+            case android.R.id.home:
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                if(fragmentManager.getBackStackEntryCount() > 0){
+                    setMenuEnable = false;
+                    fragmentManager.popBackStack();
+                }else{
+                    if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+                        return true;
+                    }
+                }
+                break;
+            case R.id.action_append:
+                item.setEnabled(false);
+                Toast.makeText(this, "討厭~~死相~~", Toast.LENGTH_SHORT).show();
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        if(setMenuEnable){
+            getMenuInflater().inflate(R.menu.menu_main, menu);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -93,6 +105,7 @@ public class MainActivity extends ActionBarActivity {
                 case 1:
                     break;
                 case 2:
+                    setMenuEnable = true;
                     SettingFragment settingFragment = new SettingFragment();
                     fragmentTransaction.replace(R.id.contentFrame, settingFragment, "settingFragment");
                     fragmentTransaction.addToBackStack("mainFragment");
@@ -102,4 +115,6 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     };
+
+
 }
