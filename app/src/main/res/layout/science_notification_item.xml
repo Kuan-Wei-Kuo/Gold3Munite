@@ -33,16 +33,14 @@
             android:id="@+id/englishText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Poor"
+            android:text="三角函數"
             android:textSize="25dp"
             android:textColor="@color/white_1"/>
-        <TextView
-            android:id="@+id/chineseText"
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="窮、少"
-            android:textSize="25dp"
-            android:textColor="@color/white_1"/>
+            android:background="@mipmap/append_image"/>
     </LinearLayout>
 
     <LinearLayout
