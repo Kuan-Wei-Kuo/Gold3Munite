@@ -25,8 +25,8 @@ public class G3MSQLite extends SQLiteOpenHelper {
     private static final String DB_NAME = "Gold3Munite.db";
     private static String DB_PATH = null;
 
-    public int MATH = 0;
-    public int PHYSICS = 1;
+    public static final int MATH = 0;
+    public static final int PHYSICS = 1;
 
     private static Context context = null;
     private SQLiteDatabase db = null;

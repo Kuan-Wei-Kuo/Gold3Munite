@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:background="@drawable/background_selector"
+    android:padding="10dp">
+    <TextView
+        android:id="@+id/exampleEnglishText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="My English is Poor."
+        android:textSize="25dp"
+        android:textColor="@color/blue_1"/>
+    <TextView
+        android:id="@+id/exampleChineseText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="我的英文不好。"
+        android:textSize="25dp"
+        android:textColor="@color/blue_1"/>
+</LinearLayout>

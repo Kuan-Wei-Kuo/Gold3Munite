@@ -1,5 +1,6 @@
 package com.kuo.gold3munite;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,17 +29,31 @@ public class PhysicsFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_recycler, container, false);
 
-        for (int i = 0; i < 5 ; i++){
-            ListItem listItem = new ListItem();
-            listItem.scienceText = "";
-            listItem.url = "file:///android_asset/PhysicsFormula/physics_f"+ (i+1) +".JPG";
-            listItems.add(listItem);
+        g3MSQLite = new G3MSQLite(view.getContext());
+        g3MSQLite.OpenDB();
+
+        Cursor cursor = g3MSQLite.getScience(G3MSQLite.PHYSICS);
+
+        if(cursor.getCount() != 0){
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount() ; i++){
+                if(cursor.getInt(6) == 1){
+                    ListItem listItem = new ListItem();
+                    listItem.rowId = cursor.getLong(0);
+                    listItem.scienceText = "";
+                    listItem.url = "file:///android_asset/PhysicsFormula/"+ cursor.getString(2) +".JPG";
+                    listItems.add(listItem);
+                }
+                cursor.moveToNext();
+            }
         }
+
+        g3MSQLite.CloseDB();
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(view.getContext());
-        g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_science, listItems, G3MRecyclerAdapter.SCIENCE);
+        g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_science, listItems, G3MRecyclerAdapter.SCIENCE, null);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(g3MRecyclerAdapter);
 

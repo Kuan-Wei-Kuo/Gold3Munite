@@ -44,7 +44,7 @@ public class SettingFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(view.getContext());
-        g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_setting, listItems, G3MRecyclerAdapter.SETTING);
+        g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_setting, listItems, G3MRecyclerAdapter.SETTING, null);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(g3MRecyclerAdapter);
 
