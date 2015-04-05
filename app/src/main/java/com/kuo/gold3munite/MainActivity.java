@@ -103,6 +103,11 @@ public class MainActivity extends ActionBarActivity {
                     fragmentTransaction.commit();
                     break;
                 case 1:
+                    StatisicsFragment statisicsFragment = new StatisicsFragment();
+                    fragmentTransaction.replace(R.id.contentFrame, statisicsFragment, "statisicsFragment");
+                    fragmentTransaction.addToBackStack("mainFragment");
+                    fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    fragmentTransaction.commit();
                     break;
                 case 2:
                     setMenuEnable = true;
