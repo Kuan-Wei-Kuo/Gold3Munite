@@ -5,19 +5,80 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
         android:padding="10dp"
         android:layout_weight="1">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TimePicker
-                android:id="@+id/timePicker"
+            <LinearLayout
+                android:id="@+id/startTimeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"></TimePicker>
-
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:clickable="true"
+                android:background="@drawable/background_selector">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="開始時間"
+                    android:textSize="25dp"
+                    android:textColor="@color/black_2"/>
+                <TextView
+                    android:id="@+id/startTimeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="上午 - 09:00"
+                    android:textSize="20dp"
+                    android:textColor="@color/black_2"
+                    android:background="@color/white_2"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/endTimeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:clickable="true"
+                android:background="@drawable/background_selector">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="結束時間"
+                    android:textSize="25dp"
+                    android:textColor="@color/black_2"/>
+                <TextView
+                    android:id="@+id/endTimeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="下午 - 16:00"
+                    android:textSize="20dp"
+                    android:textColor="@color/black_2"
+                    android:background="@color/black_2"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/areaTimeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:clickable="true"
+                android:background="@drawable/background_selector">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="間隔時間"
+                    android:textSize="25dp"
+                    android:textColor="@color/black_2"/>
+                <TextView
+                    android:id="@+id/areaTimeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1小時"
+                    android:textSize="20dp"
+                    android:textColor="@color/black_2"/>
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/typeLayout"
                 android:layout_width="match_parent"
@@ -72,6 +133,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:text="聲音"
                     android:textSize="25dp"
                     android:textColor="@color/black_2"/>
@@ -79,6 +141,8 @@
                     android:id="@+id/soundCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    style="@style/styleSelfCheckBox"
                     android:layout_alignParentRight="true"/>
             </RelativeLayout>
             <RelativeLayout
@@ -90,6 +154,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:text="震動"
                     android:textSize="25dp"
                     android:textColor="@color/black_2"/>
@@ -97,6 +162,8 @@
                     android:id="@+id/shockCheckBox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    style="@style/styleSelfCheckBox"
                     android:layout_alignParentRight="true"/>
             </RelativeLayout>
         </LinearLayout>

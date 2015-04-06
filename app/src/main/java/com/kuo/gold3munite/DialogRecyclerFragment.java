@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -29,6 +30,8 @@ public class DialogRecyclerFragment extends DialogFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         View view = inflater.inflate(R.layout.dialog_recycler, container, false);
 
         title = (TextView) view.findViewById(R.id.title);
@@ -47,6 +50,9 @@ public class DialogRecyclerFragment extends DialogFragment{
         g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_checkbox, listItems, G3MRecyclerAdapter.DIALOG_WEEK, null);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(g3MRecyclerAdapter);
         return view;
     }
+
+
 }

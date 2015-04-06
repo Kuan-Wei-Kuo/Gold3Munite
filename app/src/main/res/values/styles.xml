@@ -19,4 +19,8 @@
     <style name="CardViewStyle.Light" parent="CardView.Light">
         <item name="android:foreground">?android:attr/selectableItemBackground</item>
     </style>
+
+    <style name="styleSelfCheckBox" parent="@android:style/Widget.CompoundButton.CheckBox">
+        <item name="android:button">@drawable/custom_checkbox_blue</item>
+    </style>
 </resources>

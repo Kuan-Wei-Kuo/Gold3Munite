@@ -107,12 +107,10 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onCheck++;
-                    if(onCheck == 1){
-                        holder.checkBox.setChecked(true);
-                    }else if(onCheck == 2){
-                        onCheck = 0;
+                    if(holder.checkBox.isChecked()){
                         holder.checkBox.setChecked(false);
+                    }else{
+                        holder.checkBox.setChecked(true);
                     }
                 }
             });
