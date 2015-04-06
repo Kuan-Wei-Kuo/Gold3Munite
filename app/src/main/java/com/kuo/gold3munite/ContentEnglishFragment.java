@@ -79,8 +79,6 @@ public class ContentEnglishFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_content_english, container, false);
 
-
-
         englishText = (TextView) view.findViewById(R.id.englishText);
         kkText = (TextView) view.findViewById(R.id.kkText);
         chineseText = (TextView) view.findViewById(R.id.chineseText);

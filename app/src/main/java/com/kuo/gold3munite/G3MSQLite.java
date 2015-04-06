@@ -54,6 +54,10 @@ public class G3MSQLite extends SQLiteOpenHelper {
     private static String TAG_ID="tag_id";
     private static String DATA_TIME = "data_time";
     private static String KIND = "kind";
+    private static final String TIMER_TEXT = "timerText";
+    private static final String TIMER_TYPE_TEXT = "timerTypeText";
+    private static final String TYPE_TEXT = "typeText";
+    private static final String WEEK_TEXT = "weekText";
 
     public G3MSQLite(Context context) {
         super(context, DB_NAME, null, VERSION);
@@ -162,6 +166,26 @@ public class G3MSQLite extends SQLiteOpenHelper {
             }
             return cursor;
         }
+    }
+
+    public Cursor getNotificationTimer(){
+        return db.query("setting_table", new String[] {_ID, TIMER_TEXT , TIMER_TYPE_TEXT, TYPE_TEXT, WEEK_TEXT, STATE}, null, null, null, null, null);
+    }
+
+    public long insertNotificationTimer(String timerText, String timerTypeText, String typeText, String weekText, int state){
+        ContentValues values = new ContentValues();
+        values.put(TIMER_TEXT, timerText);
+        values.put(TIMER_TYPE_TEXT, timerTypeText);
+        values.put(TYPE_TEXT, typeText);
+        values.put(WEEK_TEXT, weekText);
+        values.put(STATE, state);
+        return db.insert("setting_table", null, values);
+    }
+
+    public long setNotificationTimerCheck(long rowId, int state){
+        ContentValues values = new ContentValues();
+        values.put(STATE, state);
+        return db.insert("setting_table", null, values);
     }
 
     public long set_statistics_data(String kind){

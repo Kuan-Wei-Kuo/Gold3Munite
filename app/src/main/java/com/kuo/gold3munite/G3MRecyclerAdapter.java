@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,12 +22,14 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
     public static final int SETTING = 2;
     public static final int ENGLISH_CONTNET = 3;
     public static final int SCIENCE_CONTNET = 4;
+    public static final int DIALOG_WEEK = 5;
 
     private ViewHolder viewHolder;
     private List<ListItem> listItems = new ArrayList<ListItem>();
     private int layoutId;
     private int TYPE;
     private OnItemClickListener onItemClickListener;
+    private int onCheck = 0;
 
     public G3MRecyclerAdapter(int layoutId, List<ListItem> listItems, int TYPE, OnItemClickListener onItemClickListener){
         this.layoutId = layoutId;
@@ -60,13 +63,16 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         }else if(TYPE == ENGLISH_CONTNET){
             viewHolder.exampleEnglishText = (TextView) view.findViewById(R.id.exampleEnglishText);
             viewHolder.exampleChineseText = (TextView) view.findViewById(R.id.exampleChineseText);
+        }else if(TYPE == DIALOG_WEEK){
+            viewHolder.checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+            viewHolder.chineseText = (TextView) view.findViewById(R.id.chineseText);
         }
 
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         if(TYPE == ENGLISH){
             holder.englishText.setText(listItems.get(position).englishText);
@@ -87,9 +93,29 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
             holder.timerText.setText(listItems.get(position).timerText);
             holder.timerTypeText.setText(listItems.get(position).timerTypeText);
             holder.typeText.setText(listItems.get(position).typeText);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onClick(listItems.get(position).rowId, position);
+                }
+            });
         }else if(TYPE == ENGLISH_CONTNET){
             holder.exampleEnglishText.setText(listItems.get(position).exampleEnglishText);
             holder.exampleChineseText.setText(listItems.get(position).exampleChineseText);
+        }else if(TYPE == DIALOG_WEEK){
+            holder.chineseText.setText(listItems.get(position).chineseText);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onCheck++;
+                    if(onCheck == 1){
+                        holder.checkBox.setChecked(true);
+                    }else if(onCheck == 2){
+                        onCheck = 0;
+                        holder.checkBox.setChecked(false);
+                    }
+                }
+            });
         }
     }
 

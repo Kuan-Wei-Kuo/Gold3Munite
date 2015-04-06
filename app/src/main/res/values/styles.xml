@@ -1,7 +1,6 @@
 <resources>
 
     <style name="AppTheme" parent="AppTheme.Base">
-
     </style>
     <!-- Base application theme. -->
     <style name="AppTheme.Base" parent="Theme.AppCompat">
@@ -13,6 +12,8 @@
         <item name="colorPrimaryDark">@color/blue_3</item>
         <!--Window color-->
         <item name="android:windowBackground">@color/white_1</item>
+        <item name="android:textColorPrimary">@android:color/holo_blue_dark</item>
+        <item name="android:textSize">25dp</item>
     </style>
 
     <style name="CardViewStyle.Light" parent="CardView.Light">

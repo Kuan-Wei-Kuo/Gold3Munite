@@ -23,6 +23,8 @@ public class MainActivity extends ActionBarActivity {
     public ActionBarDrawerToggle actionBarDrawerToggle;
     private ListView listView;
     private boolean setMenuEnable = false;
+    private OnMenuItemClick onMenuItemClick;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +33,8 @@ public class MainActivity extends ActionBarActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         listView = (ListView) findViewById(R.id.leftDrawer);
+
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white_1));
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         actionBarDrawerToggle.syncState();
@@ -71,8 +75,8 @@ public class MainActivity extends ActionBarActivity {
                 }
                 break;
             case R.id.action_append:
-                item.setEnabled(false);
-                Toast.makeText(this, "討厭~~死相~~", Toast.LENGTH_SHORT).show();
+                onMenuItemClick = (OnMenuItemClick) getSupportFragmentManager().findFragmentByTag("settingFragment");
+                onMenuItemClick.onMenuItemClick();
                 break;
         }
 
@@ -121,5 +125,7 @@ public class MainActivity extends ActionBarActivity {
         }
     };
 
-
+    public interface OnMenuItemClick{
+        void onMenuItemClick();
+    }
 }
