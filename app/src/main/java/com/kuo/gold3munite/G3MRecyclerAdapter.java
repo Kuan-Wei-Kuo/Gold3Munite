@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.CheckBox;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
     public static final int ENGLISH_CONTNET = 3;
     public static final int SCIENCE_CONTNET = 4;
     public static final int DIALOG_WEEK = 5;
+    public static final int DIALOG_TYPE = 6;
 
     private ViewHolder viewHolder;
     private List<ListItem> listItems = new ArrayList<ListItem>();
@@ -66,6 +68,9 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         }else if(TYPE == DIALOG_WEEK){
             viewHolder.checkBox = (CheckBox) view.findViewById(R.id.checkBox);
             viewHolder.chineseText = (TextView) view.findViewById(R.id.chineseText);
+        }else if(TYPE == DIALOG_TYPE){
+            viewHolder.radioButton = (RadioButton) view.findViewById(R.id.radioButton);
+            viewHolder.chineseText = (TextView) view.findViewById(R.id.chineseText);
         }
 
         return viewHolder;
@@ -108,9 +113,30 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     if(holder.checkBox.isChecked()){
+                        listItems.get(position).check = false;
                         holder.checkBox.setChecked(false);
                     }else{
+                        listItems.get(position).check = true;
                         holder.checkBox.setChecked(true);
+                    }
+                }
+            });
+        }else if(TYPE == DIALOG_TYPE){
+            holder.chineseText.setText(listItems.get(position).chineseText);
+            holder.radioButton.setChecked(listItems.get(position).check);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(!holder.radioButton.isChecked()){
+                        listItems.get(position).check = true;
+                        holder.radioButton.setChecked(true);
+
+                        for(int i = 0 ; i < listItems.size(); i++){
+                            if(i != position){
+                                listItems.get(i).check = false;
+                            }
+                        }
+                        notifyDataSetChanged();
                     }
                 }
             });
@@ -130,7 +156,13 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         }
     };
 
-    public interface OnItemClickListener{
-        void onClick(long rowId, int position);
+    public List<ListItem> getListItems(){
+        return this.listItems;
     }
+
+    public interface OnItemClickListener{
+        void onClick(long rowId, int posiwtion);
+    }
+
+
 }
