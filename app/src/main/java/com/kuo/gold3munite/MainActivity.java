@@ -66,7 +66,6 @@ public class MainActivity extends ActionBarActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 if(fragmentManager.getBackStackEntryCount() > 0){
-                    setMenuEnable = false;
                     fragmentManager.popBackStack();
                 }else{
                     if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
@@ -114,7 +113,6 @@ public class MainActivity extends ActionBarActivity {
                     fragmentTransaction.commit();
                     break;
                 case 2:
-                    setMenuEnable = true;
                     SettingFragment settingFragment = new SettingFragment();
                     fragmentTransaction.replace(R.id.contentFrame, settingFragment, "settingFragment");
                     fragmentTransaction.addToBackStack("mainFragment");
@@ -127,5 +125,9 @@ public class MainActivity extends ActionBarActivity {
 
     public interface OnMenuItemClick{
         void onMenuItemClick();
+    }
+
+    public void setMenuEnable(boolean i){
+        this.setMenuEnable = i;
     }
 }

@@ -39,6 +39,9 @@ public class MainFragment extends Fragment {
             getFragmentManager().popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
+        fragmentList.clear();
+        titleList.clear();
+
         fragmentList.add(new EnglishFragment());
         fragmentList.add(new MathFragment());
         fragmentList.add(new PhysicsFragment());
@@ -54,13 +57,8 @@ public class MainFragment extends Fragment {
         slidingTabLayout.setDistributeEvenly(true);
         slidingTabLayout.setViewPager(viewPager);
 
-        /*webView = (WebView) view.findViewById(R.id.webView);
-        webView.setWebViewClient(webViewClient);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setSupportZoom(true);
-        webView.getSettings().setBuiltInZoomControls(true);
-        webView.loadUrl("file:///android_asset/MathFormula_2.html");*/
         MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setMenuEnable(false);
         mainActivity.toolbar.setTitle("黃金三分鐘");
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.actionBarDrawerToggle.syncState();

@@ -66,27 +66,27 @@ public class DialogTimePickerFragment extends DialogFragment {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int mintue = calendar.get(Calendar.MINUTE);
 
-        if(mintue < 10){
-            time = hour+":0"+mintue;
-            if(hour < 10){
-                time = "0"+hour+":0"+mintue;
-            }
-        }else if(hour < 10){
-            time = "0"+hour+":0"+mintue;
-            if(mintue < 10){
-                time = hour+":0"+mintue;
-            }
-        }else{
-            time = hour+":"+mintue;
-            if(hour > 12){
-                time = (hour-12)+":"+mintue;
-            }
-        }
-
+        int time_i = 0;
         if(hour > 12){
             timeA = "下午";
+            time_i = hour - mintue;
         }else{
             timeA = "上午";
+            time_i = hour;
+        }
+
+        if(mintue < 10){
+            time = time_i+":0"+mintue;
+            if(time_i < 10){
+                time = "0"+time_i+":0"+mintue;
+            }
+        }else if(time_i < 10){
+            time = "0"+time_i+":"+mintue;
+            if(mintue < 10){
+                time = "0"+time_i+":0"+mintue;
+            }
+        }else{
+            time = time_i+":"+mintue;
         }
 
         timePicker.setOnTimeChangedListener(timePickerChangeListener);

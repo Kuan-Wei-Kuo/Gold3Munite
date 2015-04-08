@@ -1,11 +1,13 @@
 package com.kuo.gold3munite;
 
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +17,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -37,6 +41,9 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
     private List<String>   titleList = new ArrayList<String>();
     private int statusType = 0;
     private int statusTime = 0;
+    private String _timerText, _timerTypeText, _typeText, _weekText;
+    private int _state;
+    private int _soundState, _shockState;
 
     static SettintTimeFragment newIntance(long rowId, int position){
         SettintTimeFragment settintTimeFragment = new SettintTimeFragment();
@@ -80,6 +87,55 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
         soundLayout = (RelativeLayout) view.findViewById(R.id.soundLayout);
         shockLayout = (RelativeLayout) view.findViewById(R.id.shockLayout);
 
+        if(getArguments().getLong("rowId") != 0){
+
+            Cursor cursor = g3MSQLite.getNotificationTimer(getArguments().getLong("rowId"));
+
+            _timerText = cursor.getString(1);
+            _timerTypeText = cursor.getString(2);
+            _typeText = cursor.getString(3);
+            _weekText = cursor.getString(4);
+
+            String[] timerArray = onStringSplit(_timerText, ";");
+            String[] timerTypeArray = onStringSplit(_timerTypeText, ";");
+
+            startTimeText.setText(timerTypeArray[0] + " - " +timerArray[0]);
+            endTimeText.setText(timerTypeArray[1] + " - " +timerArray[1]);
+            typeText.setText(_typeText);
+            weekText.setText(_weekText);
+
+            if(cursor.getInt(6) == 1){
+                shockCheckBox.setChecked(true);
+                _shockState = 1;
+            }else{
+                shockCheckBox.setChecked(false);
+                _shockState = 0;
+            }
+
+            if(cursor.getInt(7) == 1){
+                soundCheckBox.setChecked(true);
+                _soundState = 1;
+            }else {
+                soundCheckBox.setChecked(false);
+                _soundState = 0;
+            }
+        }else{
+
+            _timerText = "";
+            _timerTypeText = "";
+            _typeText = "英文";
+            _weekText = "不重複";
+            _soundState = 1;
+            _shockState = 1;
+
+            startTimeText.setText(_timerText);
+            endTimeText.setText(_timerText);
+            typeText.setText(_typeText);
+            weekText.setText(_weekText);
+            soundCheckBox.setChecked(true);
+            shockCheckBox.setChecked(true);
+        }
+
         soundLayout.setOnClickListener(relativeLayoutClick);
         shockLayout.setOnClickListener(relativeLayoutClick);
         startTimeLayout.setOnClickListener(linearLayoutClick);
@@ -91,6 +147,13 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
         enter.setOnClickListener(buttonClick);
         cancel.setOnClickListener(buttonClick);
 
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setMenuEnable(false);
+        mainActivity.toolbar.setTitle("黃金三分鐘 - 設定通知內容");
+        mainActivity.setSupportActionBar(mainActivity.toolbar);
+        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
         return view;
     }
 
@@ -101,15 +164,19 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
                 case R.id.soundLayout:
                     if(soundCheckBox.isChecked()){
                         soundCheckBox.setChecked(false);
+                        _soundState = 0;
                     }else {
                         soundCheckBox.setChecked(true);
+                        _soundState = 1;
                     }
                     break;
                 case R.id.shockLayout:
                     if(shockCheckBox.isChecked()){
                         shockCheckBox.setChecked(false);
+                        _shockState = 0;
                     }else {
                         shockCheckBox.setChecked(true);
+                        _shockState = 1;
                     }
                     break;
             }
@@ -166,21 +233,41 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
                     fragmentManager.popBackStack();
                     break;
                 case R.id.enter:
+                    if(!_timerText.equals("") && !_timerTypeText.equals("")){
+                        _state = 1;
+                        g3MSQLite.insertNotificationTimer(_timerText, _timerTypeText, _typeText, _weekText, _state, _shockState, _soundState);
+                        fragmentManager.popBackStack();
+                    }else{
+                        Toast.makeText(view.getContext(), "請正確填寫內容!", Toast.LENGTH_SHORT).show();
+                    }
                     break;
             }
         }
     };
 
+    private String[] onStringSplit(String cotent, String split){
+        String[] cotentArray = cotent.split(split);
+        return cotentArray;
+    }
+
     @Override
     public void getWeekText(String weekText) {
-        this.weekText.setText(weekText);
+        if(!weekText.equals("")){
+            _weekText = weekText;
+            this.weekText.setText(weekText);
+        }else {
+            _weekText = weekText;
+            this.weekText.setText("不重複");
+        }
     }
 
     @Override
     public void getTypeText(String typeText) {
         if(statusType == 0){
+            _typeText = typeText;
             this.areaTimeText.setText(typeText);
         }else{
+            _typeText = typeText;
             this.typeText.setText(typeText);
             statusType = 0;
         }
@@ -196,6 +283,8 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
                 this.startTimeText.setBackgroundColor(getResources().getColor(R.color.black_2));
                 this.startTimeText.setTextColor(getResources().getColor(R.color.white_2));
             }
+            _timerText += time+";";
+            _timerTypeText += timeA+";";
             this.startTimeText.setText(timeA+" - "+time);
         }else{
             if(timeA.equals("上午")){
@@ -205,6 +294,8 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
                 this.endTimeText.setBackgroundColor(getResources().getColor(R.color.black_2));
                 this.endTimeText.setTextColor(getResources().getColor(R.color.white_2));
             }
+            _timerText += time;
+            _timerTypeText += timeA;
             this.endTimeText.setText(timeA+" - "+time);
             statusTime = 0;
         }

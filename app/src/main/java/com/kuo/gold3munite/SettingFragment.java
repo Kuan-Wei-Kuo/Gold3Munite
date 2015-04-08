@@ -35,6 +35,8 @@ public class SettingFragment extends Fragment implements G3MRecyclerAdapter.OnIt
 
         View view = inflater.inflate(R.layout.fragment_recycler, container, false);
 
+        listItems.clear();
+
         for (int i = 0; i < 3 ; i++){
             ListItem listItem = new ListItem();
             listItem.rowId = i+1;
@@ -52,6 +54,7 @@ public class SettingFragment extends Fragment implements G3MRecyclerAdapter.OnIt
         recyclerView.setAdapter(g3MRecyclerAdapter);
 
         MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setMenuEnable(true);
         mainActivity.toolbar.setTitle("黃金三分鐘 - 設定");
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
