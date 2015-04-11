@@ -1,9 +1,11 @@
 package com.kuo.gold3munite;
 
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
     public WebView webView;
     public CheckBox checkBox;
     public RadioButton radioButton;
+    public ImageView icon;
 
     public ViewHolder(View itemView) {
         super(itemView);

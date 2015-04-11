@@ -43,7 +43,7 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
     private int statusTime = 0;
     private String _timerText, _timerTypeText, _typeText, _weekText;
     private int _state;
-    private int _soundState, _shockState;
+    private int _soundState, _shockState, intervalTime;
 
     static SettintTimeFragment newIntance(long rowId, int position){
         SettintTimeFragment settintTimeFragment = new SettintTimeFragment();
@@ -127,7 +127,9 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
             _weekText = "不重複";
             _soundState = 1;
             _shockState = 1;
+            intervalTime = 60;
 
+            areaTimeText.setText("一小時");
             startTimeText.setText(_timerText);
             endTimeText.setText(_timerText);
             typeText.setText(_typeText);
@@ -196,7 +198,7 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
                     break;
                 case R.id.areaTimeLayout:
                     statusType = 0;
-                    String[] areaArray = {"半小時", "1小時", "2小時"};
+                    String[] areaArray = {"半小時", "一小時", "二小時"};
                     dialogRecyclerFragment = DialogRecyclerFragment.newIntance(R.layout.list_item_radiobutton, DialogRecyclerFragment.RADIO_BUTTON, areaArray, "間隔時間");
                     dialogRecyclerFragment.setTargetFragment(SettintTimeFragment.this, 0);
                     dialogRecyclerFragment.show(getFragmentManager(), "dialogRecyclerFragment");
@@ -235,7 +237,7 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
                 case R.id.enter:
                     if(!_timerText.equals("") && !_timerTypeText.equals("")){
                         _state = 1;
-                        g3MSQLite.insertNotificationTimer(_timerText, _timerTypeText, _typeText, _weekText, _state, _shockState, _soundState);
+                        g3MSQLite.insertNotificationTimer(_timerText, _timerTypeText, _typeText, _weekText, _state, _shockState, _soundState, intervalTime);
                         fragmentManager.popBackStack();
                     }else{
                         Toast.makeText(view.getContext(), "請正確填寫內容!", Toast.LENGTH_SHORT).show();
@@ -264,7 +266,13 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
     @Override
     public void getTypeText(String typeText) {
         if(statusType == 0){
-            _typeText = typeText;
+            if(typeText.equals("半小時")){
+                intervalTime = 30;
+            }else if(typeText.equals("一小時")){
+                intervalTime = 60;
+            }else{
+                intervalTime = 120;
+            }
             this.areaTimeText.setText(typeText);
         }else{
             _typeText = typeText;

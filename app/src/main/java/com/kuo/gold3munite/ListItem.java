@@ -7,4 +7,5 @@ public class ListItem {
     public String englishText, chineseText, exampleEnglishText, exampleChineseText, scienceText, url, timerText, timerTypeText, typeText, weekText;
     public long rowId;
     public boolean check = false;
+    public int icon;
 }

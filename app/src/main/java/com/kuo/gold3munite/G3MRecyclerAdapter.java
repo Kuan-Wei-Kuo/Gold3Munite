@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
     public static final int SCIENCE_CONTNET = 4;
     public static final int DIALOG_WEEK = 5;
     public static final int DIALOG_TYPE = 6;
+    public static final int DAWER_LIST = 7;
 
     private ViewHolder viewHolder;
     private List<ListItem> listItems = new ArrayList<ListItem>();
@@ -71,6 +73,9 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         }else if(TYPE == DIALOG_TYPE){
             viewHolder.radioButton = (RadioButton) view.findViewById(R.id.radioButton);
             viewHolder.chineseText = (TextView) view.findViewById(R.id.chineseText);
+        }else if(TYPE == DAWER_LIST){
+            viewHolder.icon = (ImageView) view.findViewById(R.id.icon);
+            viewHolder.chineseText = (TextView) view.findViewById(R.id.title);
         }
 
         return viewHolder;
@@ -138,6 +143,15 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
                         }
                         notifyDataSetChanged();
                     }
+                }
+            });
+        }else if(TYPE == DAWER_LIST){
+            viewHolder.icon.setBackgroundResource(listItems.get(position).icon);
+            viewHolder.chineseText.setText(listItems.get(position).chineseText);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onClick(listItems.get(position).rowId, position);
                 }
             });
         }

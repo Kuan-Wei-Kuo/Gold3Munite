@@ -60,6 +60,7 @@ public class G3MSQLite extends SQLiteOpenHelper {
     private static final String WEEK_TEXT = "weekText";
     private static final String SHOCK_STATE = "shockState";
     private static final String SOUND_STATE = "soundState";
+    private static final String INTERVAL_TIME = "intervalTime";
 
     public G3MSQLite(Context context) {
         super(context, DB_NAME, null, VERSION);
@@ -171,14 +172,14 @@ public class G3MSQLite extends SQLiteOpenHelper {
     }
 
     public Cursor getNotificationTimer(){
-        return db.query("setting_table", new String[] {_ID, TIMER_TEXT , TIMER_TYPE_TEXT, TYPE_TEXT, WEEK_TEXT, STATE, SHOCK_STATE, SOUND_STATE}, null, null, null, null, null);
+        return db.query("setting_table", new String[] {_ID, TIMER_TEXT , TIMER_TYPE_TEXT, TYPE_TEXT, WEEK_TEXT, STATE, SHOCK_STATE, SOUND_STATE, INTERVAL_TIME}, null, null, null, null, null);
     }
 
     public Cursor getNotificationTimer(long rowId){
-        return db.query("setting_table", new String[] {_ID, TIMER_TEXT , TIMER_TYPE_TEXT, TYPE_TEXT, WEEK_TEXT, STATE, SHOCK_STATE, SOUND_STATE}, _ID + "-" + rowId, null, null, null, null, null);
+        return db.query("setting_table", new String[] {_ID, TIMER_TEXT , TIMER_TYPE_TEXT, TYPE_TEXT, WEEK_TEXT, STATE, SHOCK_STATE, SOUND_STATE, INTERVAL_TIME}, _ID + "-" + rowId, null, null, null, null, null);
     }
 
-    public long insertNotificationTimer(String timerText, String timerTypeText, String typeText, String weekText, int state, int  shockState, int soundState){
+    public long insertNotificationTimer(String timerText, String timerTypeText, String typeText, String weekText, int state, int  shockState, int soundState, int intervalTime){
         ContentValues values = new ContentValues();
         values.put(TIMER_TEXT, timerText);
         values.put(TIMER_TYPE_TEXT, timerTypeText);
@@ -187,6 +188,7 @@ public class G3MSQLite extends SQLiteOpenHelper {
         values.put(STATE, state);
         values.put(SHOCK_STATE, shockState);
         values.put(SOUND_STATE, soundState);
+        values.put(INTERVAL_TIME, intervalTime);
         return db.insert("setting_table", null, values);
     }
 
