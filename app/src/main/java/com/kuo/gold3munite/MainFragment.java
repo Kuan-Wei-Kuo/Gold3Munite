@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class MainFragment extends Fragment {
             int backStackId = getFragmentManager().getBackStackEntryAt(i).getId();
             getFragmentManager().popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
+        Log.e("popBackStack",  getFragmentManager().getBackStackEntryCount()+"");
 
         fragmentList.clear();
         titleList.clear();
@@ -58,10 +60,12 @@ public class MainFragment extends Fragment {
         slidingTabLayout.setViewPager(viewPager);
 
         MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setDrawerListChanged(0);
         mainActivity.setMenuEnable(false);
         mainActivity.toolbar.setTitle("黃金三分鐘");
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.actionBarDrawerToggle.syncState();
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
         return view;

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,17 @@ public class StatisicsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_statisics, container, false);
 
         notificationButton = (Button) view.findViewById(R.id.notificationButton);
+
+
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setDrawerListChanged(2);
+        mainActivity.setMenuEnable(false);
+        mainActivity.toolbar.setTitle("黃金三分鐘 - 統計");
+        mainActivity.setSupportActionBar(mainActivity.toolbar);
+        mainActivity.actionBarDrawerToggle.syncState();
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)

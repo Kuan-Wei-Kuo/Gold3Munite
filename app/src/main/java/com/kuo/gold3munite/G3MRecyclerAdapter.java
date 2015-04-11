@@ -146,12 +146,38 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
                 }
             });
         }else if(TYPE == DAWER_LIST){
-            viewHolder.icon.setBackgroundResource(listItems.get(position).icon);
-            viewHolder.chineseText.setText(listItems.get(position).chineseText);
+            holder.icon.setBackgroundResource(listItems.get(position).icon);
+            holder.icon.getBackground().setAlpha(150);
+            holder.chineseText.setText(listItems.get(position).chineseText);
+            holder.chineseText.setTextColor(holder.itemView.getResources().getColor(R.color.black_6));
+            if(!listItems.get(position).check){
+                holder.itemView.setClickable(true);
+                holder.itemView.setBackgroundResource(R.drawable.background_selector);
+                holder.chineseText.setTextColor(holder.itemView.getResources().getColor(R.color.black_6));
+                holder.icon.getBackground().setAlpha(150);
+            }else{
+                holder.itemView.setClickable(false);
+                holder.itemView.setBackgroundResource(R.color.black_4);
+                holder.icon.getBackground().setAlpha(250);
+                holder.chineseText.setTextColor(holder.itemView.getResources().getColor(R.color.black_5));
+            }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onItemClickListener.onClick(listItems.get(position).rowId, position);
+
+                    if(!listItems.get(position).check){
+                        listItems.get(position).check = true;
+                        holder.itemView.setClickable(false);
+                        holder.itemView.setBackgroundResource(R.color.black_2);
+                        onItemClickListener.onClick(listItems.get(position).rowId, position);
+
+                        for(int i = 0 ; i < listItems.size(); i++){
+                            if(i != position){
+                                listItems.get(i).check = false;
+                            }
+                        }
+                        notifyDataSetChanged();
+                    }
                 }
             });
         }
@@ -172,6 +198,10 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     public List<ListItem> getListItems(){
         return this.listItems;
+    }
+
+    public void setListItems(List<ListItem> listItems){
+        this.listItems = listItems;
     }
 
     public interface OnItemClickListener{

@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +39,8 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
     private LinearLayoutManager linearLayoutManager;
     private List<ListItem> listItems = new ArrayList<ListItem>();
     private G3MRecyclerAdapter g3MRecyclerAdapter;
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+    private FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,11 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
             ListItem listItem = new ListItem();
             listItem.chineseText = title[i];
             listItem.icon = icon[i];
+
+            if(i == 0){
+                listItem.check = true;
+            }
+
             listItems.add(listItem);
         }
 
@@ -69,9 +77,7 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(g3MRecyclerAdapter);
 
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentManager.addOnBackStackChangedListener(fragmentStackChangeListener);
 
         MainFragment mainFragment = new MainFragment();
         fragmentTransaction.replace(R.id.contentFrame, mainFragment, "mainFragment");
@@ -86,26 +92,17 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        /*switch(item.getItemId()){
+        switch(item.getItemId()){
             case android.R.id.home:
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                if(fragmentManager.getBackStackEntryCount() > 0){
-                    fragmentManager.popBackStack();
-                }else{
-                    if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+                if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
                         return true;
-                    }
                 }
                 break;
             case R.id.action_append:
                 onMenuItemClick = (OnMenuItemClick) getSupportFragmentManager().findFragmentByTag("settingFragment");
                 onMenuItemClick.onMenuItemClick();
                 break;
-        }*/
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -123,64 +120,23 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
         return super.dispatchKeyEvent(event);
     }
 
-    private ListView.OnItemClickListener drawerItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            setListDawerClick = true;
-            if(setListDawerClick){
-                switch (i){
-                    case 1:
-                        view.setClickable(false);
-                        EnglishTestFragment englishTestFragment = new EnglishTestFragment();
-                        fragmentTransaction.replace(R.id.contentFrame, englishTestFragment, "englishTestFragment");
-                        fragmentTransaction.addToBackStack("1");
-                        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        fragmentTransaction.commit();
-                        setListDawerClick = false;
-                        //listView.setClickable(false);
-                        break;
-                    case 2:
-                        view.setClickable(false);
-                        StatisicsFragment statisicsFragment = new StatisicsFragment();
-                        fragmentTransaction.replace(R.id.contentFrame, statisicsFragment, "statisicsFragment");
-                        fragmentTransaction.addToBackStack("1");
-                        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        fragmentTransaction.commit();
-                        setListDawerClick = false;
-                        //listView.setClickable(false);
-                        break;
-                    case 3:
-                        view.setClickable(false);
-                        SettingFragment settingFragment = new SettingFragment();
-                        fragmentTransaction.replace(R.id.contentFrame, settingFragment, "settingFragment");
-                        fragmentTransaction.addToBackStack("1");
-                        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                        fragmentTransaction.commit();
-                        setListDawerClick = false;
-                        //listView.setClickable(false);
-                        break;
-                }
-            }
-
-        }
-    };
-
     @Override
     public void onClick(long rowId, int posiwtion) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         switch (posiwtion){
+            case 0:
+                MainFragment mainFragment = new MainFragment();
+                fragmentTransaction.replace(R.id.contentFrame, mainFragment, "mainFragment");
+                fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                fragmentTransaction.addToBackStack("mainFragment");
+                fragmentTransaction.commit();
+                break;
             case 1:
                 EnglishTestFragment englishTestFragment = new EnglishTestFragment();
                 fragmentTransaction.replace(R.id.contentFrame, englishTestFragment, "englishTestFragment");
                 fragmentTransaction.addToBackStack("mainFragment");
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 fragmentTransaction.commit();
-                setListDawerClick = false;
-                //listView.setClickable(false);
                 break;
             case 2:
                 StatisicsFragment statisicsFragment = new StatisicsFragment();
@@ -188,8 +144,6 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
                 fragmentTransaction.addToBackStack("mainFragment");
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 fragmentTransaction.commit();
-                setListDawerClick = false;
-                listView.setClickable(false);
                 break;
             case 3:
                 SettingFragment settingFragment = new SettingFragment();
@@ -197,11 +151,16 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
                 fragmentTransaction.addToBackStack("mainFragment");
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 fragmentTransaction.commit();
-                setListDawerClick = false;
-                //listView.setClickable(false);
                 break;
         }
     }
+
+    private FragmentManager.OnBackStackChangedListener fragmentStackChangeListener = new FragmentManager.OnBackStackChangedListener() {
+        @Override
+        public void onBackStackChanged() {
+            Toast.makeText(MainActivity.this, "狀態改變", Toast.LENGTH_SHORT).show();
+        }
+    };
 
     public interface OnMenuItemClick{
         void onMenuItemClick();
@@ -209,5 +168,18 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
 
     public void setMenuEnable(boolean i){
         this.setMenuEnable = i;
+    }
+
+    public void setDrawerListChanged(int position){
+        List<ListItem> listItems = g3MRecyclerAdapter.getListItems();
+
+        for(int i = 0 ; i < listItems.size() ; i++){
+            if(i != position){
+                listItems.get(i).check = false;
+            }else{
+                listItems.get(i).check = true;
+            }
+        }
+        g3MRecyclerAdapter.notifyDataSetChanged();
     }
 }

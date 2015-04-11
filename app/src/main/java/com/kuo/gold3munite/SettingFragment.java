@@ -54,11 +54,13 @@ public class SettingFragment extends Fragment implements G3MRecyclerAdapter.OnIt
         recyclerView.setAdapter(g3MRecyclerAdapter);
 
         MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setDrawerListChanged(3);
         mainActivity.setMenuEnable(true);
         mainActivity.toolbar.setTitle("黃金三分鐘 - 設定");
         mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mainActivity.actionBarDrawerToggle.syncState();
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
         return view;
     }
