@@ -57,6 +57,7 @@ public class SettingFragment extends Fragment implements G3MRecyclerAdapter.OnIt
         mainActivity.setDrawerListChanged(3);
         mainActivity.setMenuEnable(true);
         mainActivity.toolbar.setTitle("黃金三分鐘 - 設定");
+        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.actionBarDrawerToggle.syncState();
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);

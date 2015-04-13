@@ -62,6 +62,7 @@ public class MainFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setDrawerListChanged(0);
         mainActivity.setMenuEnable(false);
+        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
         mainActivity.toolbar.setTitle("黃金三分鐘");
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.actionBarDrawerToggle.syncState();

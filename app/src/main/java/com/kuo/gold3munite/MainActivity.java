@@ -132,8 +132,8 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
                 fragmentTransaction.commit();
                 break;
             case 1:
-                EnglishTestFragment englishTestFragment = new EnglishTestFragment();
-                fragmentTransaction.replace(R.id.contentFrame, englishTestFragment, "englishTestFragment");
+                TestFragment testFragment = new TestFragment();
+                fragmentTransaction.replace(R.id.contentFrame, testFragment, "testFragment");
                 fragmentTransaction.addToBackStack("mainFragment");
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 fragmentTransaction.commit();

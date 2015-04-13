@@ -2,16 +2,12 @@ package com.kuo.gold3munite;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * Created by User on 2015/4/2.
@@ -31,6 +26,7 @@ public class EnglishTestFragment extends Fragment {
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private Handler handler = new Handler();
     private int scoend = 0;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,15 +61,16 @@ public class EnglishTestFragment extends Fragment {
             }
         });
 
+        handler.postDelayed(runTimerStop, 1000);
+
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setDrawerListChanged(1);
         mainActivity.toolbar.setTitle("黃金三分鐘 - 測驗");
+        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.red_2));
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.actionBarDrawerToggle.syncState();
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-        handler.postDelayed(runTimerStop, 1000);
 
         return view;
     }

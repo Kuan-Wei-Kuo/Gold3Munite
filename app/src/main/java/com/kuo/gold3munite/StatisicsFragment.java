@@ -42,6 +42,7 @@ public class StatisicsFragment extends Fragment {
         mainActivity.setDrawerListChanged(2);
         mainActivity.setMenuEnable(false);
         mainActivity.toolbar.setTitle("黃金三分鐘 - 統計");
+        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.actionBarDrawerToggle.syncState();
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
