@@ -41,6 +41,7 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
     private G3MRecyclerAdapter g3MRecyclerAdapter;
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+    private boolean setPopBack = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +95,14 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
         // as you specify a parent activity in AndroidManifest.xml.
         switch(item.getItemId()){
             case android.R.id.home:
-                if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+                if(setPopBack){
+                    if(fragmentManager.getBackStackEntryCount() > 0){
+                        fragmentManager.popBackStack();
+                    }
+                }else{
+                    if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
                         return true;
+                    }
                 }
                 break;
             case R.id.action_append:
@@ -170,6 +177,9 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
         this.setMenuEnable = i;
     }
 
+    public void setPopBack(boolean i){
+        this.setPopBack = i;
+    }
     public void setDrawerListChanged(int position){
         List<ListItem> listItems = g3MRecyclerAdapter.getListItems();
 

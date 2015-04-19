@@ -57,11 +57,24 @@ public class MainFragment extends Fragment {
 
         viewPager.setAdapter(new G3MPagerAdapter(getChildFragmentManager(), fragmentList, titleList));
         slidingTabLayout.setDistributeEvenly(true);
+        slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+            @Override
+            public int getIndicatorColor(int position) {
+                if(viewPager.getCurrentItem() == 0){
+                    return getResources().getColor(R.color.red_2);
+                }else if(viewPager.getCurrentItem() == 1){
+                    return getResources().getColor(R.color.blue_1);
+                }else{
+                    return getResources().getColor(R.color.green_1);
+                }
+            }
+        });
         slidingTabLayout.setViewPager(viewPager);
 
         MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setDrawerListChanged(0);
+        mainActivity.setPopBack(false);
         mainActivity.setMenuEnable(false);
+        mainActivity.setDrawerListChanged(0);
         mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
         mainActivity.toolbar.setTitle("黃金三分鐘");
         mainActivity.setSupportActionBar(mainActivity.toolbar);

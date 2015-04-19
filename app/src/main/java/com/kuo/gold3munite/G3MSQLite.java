@@ -36,7 +36,7 @@ public class G3MSQLite extends SQLiteOpenHelper {
     private static String OLD_ENG_TABLE_NAME = "old_eng_table";
     private static String OLD_MATH_TABLE_NAME = "old_math_table";
     private static String OLD_PHYSICS_TABLE_NAME = "old_physics_table";
-    private static String STATISTICS_DATA_TABLE_NAME = "statistics_data";
+    private static String STATISTICS_DATA_TABLE_NAME = "statisics_table";
     private static String _ID = "_id";
     private static String FORMULA_NAME = "formulaName";
     private static String FORMULA_URL = "formulaUrl";
@@ -53,7 +53,9 @@ public class G3MSQLite extends SQLiteOpenHelper {
     private static String STATE = "state";
     private static String TAG_ID="tag_id";
     private static String DATA_TIME = "data_time";
-    private static String KIND = "kind";
+    private static final String DATE = "date";
+    private static final String KIND = "kind";
+    private static final String TYPE = "type";
     private static final String TIMER_TEXT = "timerText";
     private static final String TIMER_TYPE_TEXT = "timerTypeText";
     private static final String TYPE_TEXT = "typeText";
@@ -198,18 +200,12 @@ public class G3MSQLite extends SQLiteOpenHelper {
         return db.insert("setting_table", null, values);
     }
 
-    public long set_statistics_data(String kind){
-        SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date mDate = new Date(System.currentTimeMillis());
-        String dateNow = mSimpleDateFormat.format(mDate);
-        ContentValues mContentValues = new ContentValues();
-        mContentValues.put(DATA_TIME, dateNow);
-        mContentValues.put(KIND, kind);
-        return db.insert(STATISTICS_DATA_TABLE_NAME, null, mContentValues);
+    public Cursor getStatisics(){
+        return db.query(STATISTICS_DATA_TABLE_NAME, new String[] {_ID, DATE, KIND, TYPE}, null, null, null, null, null, null);
     }
 
-    public Cursor get_statisics(long id) throws SQLException{
-        Cursor mCursor = db.query(STATISTICS_DATA_TABLE_NAME, new String[] {_ID, DATA_TIME, KIND}, _ID + "=" + id, null, null, null, null, null);
+    public Cursor getStatisics(long id){
+        Cursor mCursor = db.query(STATISTICS_DATA_TABLE_NAME, new String[] {_ID, DATE, KIND, TYPE}, _ID + "=" + id, null, null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }

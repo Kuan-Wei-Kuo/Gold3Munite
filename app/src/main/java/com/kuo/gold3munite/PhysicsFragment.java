@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +18,7 @@ import java.util.List;
 /**
  * Created by User on 2015/4/4.
  */
-public class PhysicsFragment extends Fragment {
+public class PhysicsFragment extends Fragment implements G3MRecyclerAdapter.OnItemClickListener{
 
     private RecyclerView recyclerView;
     private G3MRecyclerAdapter g3MRecyclerAdapter;
@@ -32,6 +34,7 @@ public class PhysicsFragment extends Fragment {
         g3MSQLite = new G3MSQLite(view.getContext());
         g3MSQLite.OpenDB();
 
+        listItems.clear();
         Cursor cursor = g3MSQLite.getScience(G3MSQLite.PHYSICS);
 
         if(cursor.getCount() != 0){
@@ -40,8 +43,8 @@ public class PhysicsFragment extends Fragment {
                 if(cursor.getInt(6) == 1){
                     ListItem listItem = new ListItem();
                     listItem.rowId = cursor.getLong(0);
-                    listItem.scienceText = "";
-                    listItem.url = "file:///android_asset/PhysicsFormula/"+ cursor.getString(2) +".JPG";
+                    listItem.scienceText = cursor.getString(1);
+                    //listItem.url = "file:///android_asset/PhysicsFormula/"+ cursor.getString(2) +".JPG";
                     listItems.add(listItem);
                 }
                 cursor.moveToNext();
@@ -53,10 +56,23 @@ public class PhysicsFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(view.getContext());
-        g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_science, listItems, G3MRecyclerAdapter.SCIENCE, null);
+        g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_science, listItems, G3MRecyclerAdapter.SCIENCE, this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(g3MRecyclerAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onClick(long rowId, int posiwtion) {
+
+        FragmentManager fragmentManager = getParentFragment().getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        ContentScienceFragment contentScienceFragment = ContentScienceFragment.newIntance(rowId, ContentScienceFragment.PHYSICS);
+        fragmentTransaction.replace(R.id.contentFrame, contentScienceFragment, "contentScienceFragment");
+        fragmentTransaction.addToBackStack("contentScienceFragment");
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragmentTransaction.commit();
     }
 }

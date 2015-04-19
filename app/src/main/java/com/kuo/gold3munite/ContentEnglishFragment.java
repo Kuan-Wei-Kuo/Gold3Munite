@@ -68,7 +68,10 @@ public class ContentEnglishFragment extends Fragment {
         }
 
         MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.toolbar.setTitle("黃金三分鐘 - 英文");
+        mainActivity.setPopBack(true);
+        mainActivity.setMenuEnable(false);
+        mainActivity.toolbar.setTitle("英文");
+        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.red_2));
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);

@@ -54,11 +54,11 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
             viewHolder.exampleEnglishText = (TextView) view.findViewById(R.id.exampleEnglishText);
             viewHolder.exampleChineseText = (TextView) view.findViewById(R.id.exampleChineseText);
         }else if(TYPE == SCIENCE){
-            //viewHolder.scienceText = (TextView) view.findViewById(R.id.scienceText);
-            viewHolder.webView = (WebView) view.findViewById(R.id.webView);
-            viewHolder.webView.setWebViewClient(webViewClient);
-            viewHolder.webView.getSettings().setJavaScriptEnabled(true);
-            viewHolder.webView.setScrollContainer(false);
+            viewHolder.scienceText = (TextView) view.findViewById(R.id.scienceText);
+            //viewHolder.webView = (WebView) view.findViewById(R.id.webView);
+            //viewHolder.webView.setWebViewClient(webViewClient);
+            //viewHolder.webView.getSettings().setJavaScriptEnabled(true);
+            //viewHolder.webView.setScrollContainer(false);
         }else if(TYPE == SETTING) {
             viewHolder.timerText = (TextView) view.findViewById(R.id.timerText);
             viewHolder.timerTypeText = (TextView) view.findViewById(R.id.timerTypeText);
@@ -97,8 +97,14 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
                 }
             });
         }else if(TYPE == SCIENCE){
-            //holder.scienceText.setText(listItems.get(position).scienceText);
-            holder.webView.loadUrl(listItems.get(position).url);
+            holder.scienceText.setText(listItems.get(position).scienceText);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onClick(listItems.get(position).rowId, position);
+                }
+            });
+            //holder.webView.loadUrl(listItems.get(position).url);
         }else if(TYPE == SETTING) {
             holder.timerText.setText(listItems.get(position).timerText);
             holder.timerTypeText.setText(listItems.get(position).timerTypeText);
@@ -187,15 +193,6 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
     public int getItemCount() {
         return listItems.size();
     }
-
-    private WebViewClient webViewClient = new WebViewClient() {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-    };
-
     public List<ListItem> getListItems(){
         return this.listItems;
     }

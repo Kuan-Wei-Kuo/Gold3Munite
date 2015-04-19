@@ -41,6 +41,14 @@ public class EnglishTestFragment extends Fragment {
             e.printStackTrace();
         }
 
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setPopBack(true);
+        mainActivity.setMenuEnable(false);
+        mainActivity.toolbar.setTitle("英文測驗");
+        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.red_2));
+        mainActivity.setSupportActionBar(mainActivity.toolbar);
+        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     @Nullable
@@ -62,15 +70,6 @@ public class EnglishTestFragment extends Fragment {
         });
 
         handler.postDelayed(runTimerStop, 1000);
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setDrawerListChanged(1);
-        mainActivity.toolbar.setTitle("黃金三分鐘 - 測驗");
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.red_2));
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.actionBarDrawerToggle.syncState();
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
         return view;
     }
