@@ -24,6 +24,8 @@ public class G3MSQLite extends SQLiteOpenHelper {
     public static final int MATH = 0;
     public static final int PHYSICS = 1;
     public static final String MATH_FORMULA_URL = "math_formula_";
+    public static final String MATH_QUESTION_URL = "math_question_";
+    public static final String MATH_ANSWER_URL = "math_answer_";
     public static final String PHYSICS_FORMULA_URL = "physics_f";
 
     private static final int VERSION = 1;

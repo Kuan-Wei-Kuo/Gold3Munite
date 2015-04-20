@@ -1,41 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:padding="10dp">
-    <LinearLayout
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:id="@+id/scrollViewLinearLayout"
+            android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="match_parent">
         <WebView
             android:id="@+id/questionWebView"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_weight="1"
-            android:layout_marginTop="10dp"></WebView>
-        <WebView
-            android:id="@+id/chooesWebView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="160dp"
             android:layout_weight="1"
             android:layout_marginTop="10dp"></WebView>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter your answer."
-                android:textColorHint="@color/black_2"/>
-            <LinearLayout
+            <RadioGroup
+                android:id="@+id/radioGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+                <RadioButton
+                    android:id="@+id/radioA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="A"
+                    android:textColor="@color/black_2"
+                    android:textSize="25dp"/>
+                <RadioButton
+                    android:id="@+id/radioB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="B"
+                    android:textColor="@color/black_2"
+                    android:textSize="25dp"/>
+                <RadioButton
+                    android:id="@+id/radioC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="C"
+                    android:textColor="@color/black_2"
+                    android:textSize="25dp"/>
+                <RadioButton
+                    android:id="@+id/radioD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="D"
+                    android:textColor="@color/black_2"
+                    android:textSize="25dp"/>
+            </RadioGroup>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
 
                 <Button
+                    android:id="@+id/nextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -44,6 +78,7 @@
                     android:textColor="@color/white_1"
                     android:background="@drawable/background_selector_blue"/>
                 <Button
+                    android:id="@+id/answerButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -52,6 +87,7 @@
                     android:textColor="@color/white_1"
                     android:background="@drawable/background_selector_blue"/>
                 <Button
+                    android:id="@+id/enterButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -61,19 +97,6 @@
                     android:background="@drawable/background_selector_blue"/>
             </LinearLayout>
         </LinearLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="解答："
-            android:textSize="25dp"
-            android:textColor="@color/black_1"
-            />
-        <WebView
-            android:id="@+id/answerWebView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_weight="1"
-            android:layout_marginTop="10dp"></WebView>
-    </LinearLayout>
-</ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

@@ -7,7 +7,7 @@
         android:id="@+id/timerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="請於15秒內回答題目"
+        android:text="請於20秒內回答題目"
         android:textSize="25dp"
         android:textColor="@color/black_1"/>
     <ImageView
@@ -41,27 +41,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp">
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:orientation="horizontal">
-            <Button
-                android:id="@+id/nextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/background_selector_red"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:text="下一題"
-                android:textColor="@color/white_1"
-                android:textSize="25dp"/>
             <Button
                 android:id="@+id/clearButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_selector_red"
                 android:layout_marginRight="10dp"
-                android:layout_weight="1"
                 android:text="清除"
                 android:textColor="@color/white_1"
                 android:textSize="25dp"/>
@@ -70,7 +59,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_weight="1"
                 android:background="@drawable/background_selector_red"
                 android:text="確定"
                 android:textColor="@color/white_1"

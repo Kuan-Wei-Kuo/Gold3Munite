@@ -36,7 +36,7 @@ public class EnglishFragment extends Fragment implements G3MRecyclerAdapter.OnIt
         g3MSQLite.OpenDB();
 
         listItems.clear();
-        Cursor cursor =g3MSQLite.getEnglish();
+        Cursor cursor = g3MSQLite.getEnglish();
 
         if(cursor.getCount() != 0){
             cursor.moveToFirst();
