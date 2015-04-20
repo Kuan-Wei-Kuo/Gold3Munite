@@ -39,8 +39,8 @@ public class MathFragment extends Fragment implements G3MRecyclerAdapter.OnItemC
 
         if(cursor.getCount() != 0){
             cursor.moveToFirst();
-            for (int i = 0; i < 5 ; i++){
-                if(cursor.getInt(6) == 1){
+            for (int i = 0; i < cursor.getCount() ; i++){
+                if(cursor.getInt(3) == 1){
                     ListItem listItem = new ListItem();
                     listItem.rowId = cursor.getLong(0);
                     listItem.scienceText = cursor.getString(1);

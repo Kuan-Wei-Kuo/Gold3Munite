@@ -40,11 +40,10 @@ public class PhysicsFragment extends Fragment implements G3MRecyclerAdapter.OnIt
         if(cursor.getCount() != 0){
             cursor.moveToFirst();
             for (int i = 0; i < cursor.getCount() ; i++){
-                if(cursor.getInt(6) == 1){
+                if(cursor.getInt(3) == 1){
                     ListItem listItem = new ListItem();
                     listItem.rowId = cursor.getLong(0);
                     listItem.scienceText = cursor.getString(1);
-                    //listItem.url = "file:///android_asset/PhysicsFormula/"+ cursor.getString(2) +".JPG";
                     listItems.add(listItem);
                 }
                 cursor.moveToNext();

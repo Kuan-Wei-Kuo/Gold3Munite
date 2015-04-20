@@ -21,38 +21,30 @@ import java.util.Date;
  */
 public class G3MSQLite extends SQLiteOpenHelper {
 
-    private static final int VERSION = 1;
-    private static final String DB_NAME = "Gold3Munite.db";
-    private static String DB_PATH = null;
-
     public static final int MATH = 0;
     public static final int PHYSICS = 1;
+    public static final String MATH_FORMULA_URL = "math_formula_";
+    public static final String PHYSICS_FORMULA_URL = "physics_f";
 
-    private static Context context = null;
-    private SQLiteDatabase db = null;
-    private static String MATH_TABLE_NAME = "math_table";
-    private static String PHYSICS_TABLE_NAME = "physics_table";
-    private static String ENG_TABLE_NAME = "eng_table";
-    private static String OLD_ENG_TABLE_NAME = "old_eng_table";
-    private static String OLD_MATH_TABLE_NAME = "old_math_table";
-    private static String OLD_PHYSICS_TABLE_NAME = "old_physics_table";
-    private static String STATISTICS_DATA_TABLE_NAME = "statisics_table";
-    private static String _ID = "_id";
-    private static String FORMULA_NAME = "formulaName";
-    private static String FORMULA_URL = "formulaUrl";
-    private static String QUESTION = "question";
-    private static String ANSWER = "answer";
-    private static String ANSWER_CLIENT = "answerClient";
-    private static String ENG_WORD = "eng_word";
-    private static String ENG_PT = "eng_pt";
-    private static String CNI_WORD = "cni_word";
-    private static String CNI_EX01 = "cni_ex01";
-    private static String CNI_EX02 = "cni_ex02";
-    private static String ENG_EX01 = "eng_ex01";
-    private static String ENG_EX02 = "eng_ex02";
-    private static String STATE = "state";
-    private static String TAG_ID="tag_id";
-    private static String DATA_TIME = "data_time";
+    private static final int VERSION = 1;
+    private static final String DB_NAME = "Gold3Munite.db";
+    private static final String MATH_TABLE_NAME = "math_table";
+    private static final String PHYSICS_TABLE_NAME = "physics_table";
+    private static final String ENG_TABLE_NAME = "english_table";
+    private static final String STATISTICS_DATA_TABLE_NAME = "statisics_table";
+
+    private static final String _ID = "_id";
+    private static final String FORMULA_NAME = "formulaName";
+    private static final String ANSWER_CLIENT = "answerClient";
+    private static final String ENG_WORD = "eng_word";
+    private static final String ENG_PT = "eng_pt";
+    private static final String CNI_WORD = "cni_word";
+    private static final String CNI_EX01 = "cni_ex01";
+    private static final String CNI_EX02 = "cni_ex02";
+    private static final String ENG_EX01 = "eng_ex01";
+    private static final String ENG_EX02 = "eng_ex02";
+    private static final String STATE = "state";
+    private static final String TAG_ID="tag_id";
     private static final String DATE = "date";
     private static final String KIND = "kind";
     private static final String TYPE = "type";
@@ -63,6 +55,10 @@ public class G3MSQLite extends SQLiteOpenHelper {
     private static final String SHOCK_STATE = "shockState";
     private static final String SOUND_STATE = "soundState";
     private static final String INTERVAL_TIME = "intervalTime";
+
+    private static String DB_PATH = null;
+    private static Context context = null;
+    private SQLiteDatabase db = null;
 
     public G3MSQLite(Context context) {
         super(context, DB_NAME, null, VERSION);
@@ -148,24 +144,24 @@ public class G3MSQLite extends SQLiteOpenHelper {
     public Cursor getScience(int TYPE){
         String table = null;
         if(TYPE == MATH){
-            return db.query(MATH_TABLE_NAME, new String[] {_ID, FORMULA_NAME , FORMULA_URL, QUESTION, ANSWER, ANSWER_CLIENT, STATE}, null, null, null, null, null);
+            return db.query(MATH_TABLE_NAME, new String[] {_ID, FORMULA_NAME , ANSWER_CLIENT, STATE}, null, null, null, null, null);
         }
         else{
-            return db.query(PHYSICS_TABLE_NAME, new String[] {_ID, FORMULA_NAME , FORMULA_URL, QUESTION, ANSWER, ANSWER_CLIENT, STATE}, null, null, null, null, null);
+            return db.query(PHYSICS_TABLE_NAME, new String[] {_ID, FORMULA_NAME , ANSWER_CLIENT, STATE}, null, null, null, null, null);
         }
     }
 
     public Cursor getScience(long id, int TYPE){
         String table = null;
         if(TYPE == MATH){
-            Cursor cursor = db.query(MATH_TABLE_NAME, new String[] {_ID, FORMULA_NAME , FORMULA_URL, QUESTION, ANSWER, ANSWER_CLIENT, STATE}, _ID +"=" + id, null, null, null, null,null);
+            Cursor cursor = db.query(MATH_TABLE_NAME, new String[] {_ID, FORMULA_NAME, ANSWER_CLIENT, STATE}, _ID +"=" + id, null, null, null, null,null);
             if (cursor != null) {
                 cursor.moveToFirst();
             }
             return cursor;
         }
         else{
-            Cursor cursor = db.query(PHYSICS_TABLE_NAME, new String[] {_ID, FORMULA_NAME , FORMULA_URL, QUESTION, ANSWER, ANSWER_CLIENT, STATE}, _ID +"=" + id, null, null, null, null,null);
+            Cursor cursor = db.query(PHYSICS_TABLE_NAME, new String[] {_ID, FORMULA_NAME, ANSWER_CLIENT, STATE}, _ID +"=" + id, null, null, null, null,null);
             if (cursor != null) {
                 cursor.moveToFirst();
             }

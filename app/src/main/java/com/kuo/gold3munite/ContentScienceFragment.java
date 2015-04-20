@@ -69,13 +69,14 @@ public class ContentScienceFragment extends Fragment {
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(webViewClient);
-
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
         if(getArguments().getInt("TYPE") == MATH){
             cursor = g3MSQLite.getScience(getArguments().getLong("rowId"), G3MSQLite.MATH);
-            webView.loadUrl("file:///android_asset/MathFormula/"+ cursor.getString(2) +".html");
+            webView.loadUrl("file:///android_asset/MathFormula/"+ G3MSQLite.MATH_FORMULA_URL+cursor.getLong(0) +".html");
         }else if(getArguments().getInt("TYPE") == PHYSICS){
             cursor = g3MSQLite.getScience(getArguments().getLong("rowId"), G3MSQLite.PHYSICS);
-            webView.loadUrl("file:///android_asset/PhysicsFormula/"+ cursor.getString(2) +".JPG");
+            webView.loadUrl("file:///android_asset/PhysicsFormula/"+ G3MSQLite.PHYSICS_FORMULA_URL+cursor.getLong(0) +".JPG");
         }
 
         scienceText.setText(cursor.getString(1));
