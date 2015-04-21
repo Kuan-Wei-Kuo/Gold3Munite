@@ -45,7 +45,7 @@ public class EnglishFragment extends Fragment implements G3MRecyclerAdapter.OnIt
                     ListItem listItem = new ListItem();
                     listItem.rowId = cursor.getLong(0);
                     listItem.englishText = cursor.getString(1);
-                    Log.d("englishText", cursor.getString(1));
+                    //Log.d("englishText", cursor.getString(1));
                     listItem.chineseText = cursor.getString(3);
                     listItem.exampleEnglishText = cursor.getString(5);
                     listItem.exampleChineseText = cursor.getString(4);

@@ -154,7 +154,7 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
                 break;
             case 3:
                 SettingFragment settingFragment = new SettingFragment();
-                fragmentTransaction.replace(R.id.contentFrame, settingFragment, "settingFragment");
+                fragmentTransaction.replace(R.id.contentFrame, settingFragment, "settingsFragment");
                 fragmentTransaction.addToBackStack("mainFragment");
                 fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 fragmentTransaction.commit();

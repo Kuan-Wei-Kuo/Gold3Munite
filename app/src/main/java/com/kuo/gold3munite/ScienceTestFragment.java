@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,6 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,17 +23,29 @@ import java.util.Random;
 /**
  * Created by User on 2015/4/13.
  */
-public class MathTestFragment extends Fragment {
+public class ScienceTestFragment extends Fragment {
+
+    public static final int MATH = 0;
+    public static final int PHYSICS = 1;
 
     private WebView questionWebView;
     private LinearLayout scrollViewLinearLayout;
     private RadioGroup radioGroup;
     private Button nextButton, answerButton, enterButton;
     private G3MSQLite g3MSQLite;
-    private Cursor cursorQuestion;
+    private Cursor cursorQuestion, cursor;
     private int questionCount = 0;
     private int[] scienceRowId;
     private String answer = "";
+    private boolean openAnswer = false;
+
+    static ScienceTestFragment newIntance(int TYPE){
+        ScienceTestFragment scienceTestFragment = new ScienceTestFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("TYPE", TYPE);
+        scienceTestFragment.setArguments(bundle);
+        return  scienceTestFragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +54,15 @@ public class MathTestFragment extends Fragment {
         g3MSQLite = new G3MSQLite(getActivity());
         g3MSQLite.OpenDB();
 
-        Cursor cursor = g3MSQLite.getScience(G3MSQLite.MATH);
+        MainActivity mainActivity = (MainActivity) getActivity();
+
+        if(getArguments().getInt("TYPE") == MATH){
+            cursor = g3MSQLite.getScience(G3MSQLite.MATH);
+            mainActivity.toolbar.setTitle("數學測驗");
+        }else if(getArguments().getInt("TYPE") == PHYSICS){
+            cursor = g3MSQLite.getScience(G3MSQLite.PHYSICS);
+            mainActivity.toolbar.setTitle("物理測驗");
+        }
 
         scienceRowId = new int[cursor.getCount()];
 
@@ -52,6 +71,13 @@ public class MathTestFragment extends Fragment {
         }
 
         scienceRowId = setPorkerRandom(scienceRowId);
+
+        mainActivity.setPopBack(true);
+        mainActivity.setMenuEnable(false);
+        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
+        mainActivity.setSupportActionBar(mainActivity.toolbar);
+        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     @Override
@@ -59,7 +85,11 @@ public class MathTestFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_science_test, container, false);
 
-        cursorQuestion = g3MSQLite.getScience(scienceRowId[questionCount], G3MSQLite.MATH);
+        if(getArguments().getInt("TYPE") == MATH){
+            cursorQuestion = g3MSQLite.getScience(scienceRowId[questionCount], G3MSQLite.MATH);
+        }else if(getArguments().getInt("TYPE") == PHYSICS){
+            cursorQuestion = g3MSQLite.getScience(scienceRowId[questionCount], G3MSQLite.PHYSICS);
+        }
 
         initializeUI(view);
 
@@ -89,32 +119,58 @@ public class MathTestFragment extends Fragment {
     private Button.OnClickListener buttonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
+            TextView answerText = new TextView(view.getContext());
+            WebView answerWebView = new WebView(view.getContext());
+
             switch (view.getId()){
                 case R.id.nextButton:
                     questionCount++;
-                    cursorQuestion = g3MSQLite.getScience(scienceRowId[questionCount], G3MSQLite.MATH);
-                    questionWebView.loadUrl("file:///android_asset/MathQuestion/"+ G3MSQLite.MATH_QUESTION_URL+cursorQuestion.getLong(0) +".html");
+                    if(getArguments().getInt("TYPE") == MATH){
+                        cursorQuestion = g3MSQLite.getScience(scienceRowId[questionCount], G3MSQLite.MATH);
+                        questionWebView.loadUrl("file:///android_asset/MathQuestion/"+ G3MSQLite.MATH_QUESTION_URL+cursorQuestion.getLong(0) +".html");
+                    }else if(getArguments().getInt("TYPE") == PHYSICS){
+                        cursorQuestion = g3MSQLite.getScience(scienceRowId[questionCount], G3MSQLite.PHYSICS);
+                        questionWebView.loadUrl("file:///android_asset/PhysicsQuestion/"+ G3MSQLite.MATH_QUESTION_URL+cursorQuestion.getLong(0) +".JPG");
+                    }
                     break;
                 case R.id.answerButton:
 
-                    TextView answerText = new TextView(view.getContext());
-                    answerText.setText("解答：");
-                    answerText.setTextColor(getResources().getColor(R.color.black_2));
+                    if(!openAnswer){
+                        openAnswer = true;
+                        answerText.setText("解答：");
+                        answerText.setTextColor(getResources().getColor(R.color.black_2));
+                        answerWebView.getSettings().setJavaScriptEnabled(true);
+                        answerWebView.setWebViewClient(webViewClient);
+                        answerWebView.getSettings().setSupportZoom(true);
+                        answerWebView.getSettings().setBuiltInZoomControls(true);
+                        if(getArguments().getInt("TYPE") == MATH){
+                            answerWebView.loadUrl("file:///android_asset/MathAnswer/" + G3MSQLite.MATH_ANSWER_URL + cursorQuestion.getLong(0) + ".html");
+                        }else if(getArguments().getInt("TYPE") == PHYSICS){
+                            answerWebView.loadUrl("file:///android_asset/PhysicsAnswer/" + G3MSQLite.MATH_ANSWER_URL + cursorQuestion.getLong(0) + ".JPG");
+                        }
+                        scrollViewLinearLayout.addView(answerText);
+                        scrollViewLinearLayout.addView(answerWebView);
+                    }
 
-                    WebView answerWebView = new WebView(view.getContext());
-                    answerWebView.getSettings().setJavaScriptEnabled(true);
-                    answerWebView.setWebViewClient(webViewClient);
-                    answerWebView.getSettings().setSupportZoom(true);
-                    answerWebView.getSettings().setBuiltInZoomControls(true);
-                    answerWebView.loadUrl("file:///android_asset/MathAnswer/" + G3MSQLite.MATH_ANSWER_URL + cursorQuestion.getLong(0) + ".html");
+                    answerButton.setEnabled(false);
+                    enterButton.setEnabled(false);
 
-                    scrollViewLinearLayout.addView(answerText);
-                    scrollViewLinearLayout.addView(answerWebView);
+                    answerButton.setBackgroundResource(R.color.black_2);
+                    enterButton.setBackgroundResource(R.color.black_2);
 
                     break;
                 case R.id.enterButton:
                     if(cursorQuestion.getString(2).equals(answer)){
                         Toast.makeText(view.getContext(), "答案正確！", Toast.LENGTH_SHORT).show();
+                        questionCount++;
+                        if(getArguments().getInt("TYPE") == MATH){
+                            cursorQuestion = g3MSQLite.getScience(scienceRowId[questionCount], G3MSQLite.MATH);
+                            questionWebView.loadUrl("file:///android_asset/MathQuestion/"+ G3MSQLite.MATH_QUESTION_URL+cursorQuestion.getLong(0) +".html");
+                        }else if(getArguments().getInt("TYPE") == PHYSICS){
+                            cursorQuestion = g3MSQLite.getScience(scienceRowId[questionCount], G3MSQLite.PHYSICS);
+                            questionWebView.loadUrl("file:///android_asset/PhysicsQuestion/"+ G3MSQLite.MATH_QUESTION_URL+cursorQuestion.getLong(0) +".JPG");
+                        }
                     }else{
                         Toast.makeText(view.getContext(), "答案錯誤！", Toast.LENGTH_SHORT).show();
                         Vibrator vibrator =  (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);

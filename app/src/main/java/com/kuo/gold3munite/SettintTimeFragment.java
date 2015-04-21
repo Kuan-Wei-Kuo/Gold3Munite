@@ -69,7 +69,6 @@ public class SettintTimeFragment extends Fragment implements DialogRecyclerFragm
 
         View view = inflater.inflate(R.layout.fragment_setting_item, container, false);
 
-        //timePicker = (TimePicker) view.findViewById(R.id.timePicker);
         cancel = (Button) view.findViewById(R.id.cancel);
         enter = (Button) view.findViewById(R.id.enter);
         soundCheckBox = (CheckBox) view.findViewById(R.id.soundCheckBox);

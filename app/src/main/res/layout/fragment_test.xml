@@ -10,12 +10,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="10dp">
-        <LinearLayout
+        <com.kuo.gold3munite.MaterialLinearLayout
             android:id="@+id/englishLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@drawable/background_selector_red"
+            android:background="@color/red_2"
             android:padding="10dp"
             android:clickable="true"
             android:layout_weight="1">
@@ -32,13 +32,13 @@
                 android:text="英文"
                 android:textSize="25dp"
                 android:textColor="@color/white_1"/>
-        </LinearLayout>
-        <LinearLayout
+        </com.kuo.gold3munite.MaterialLinearLayout>
+        <com.kuo.gold3munite.MaterialLinearLayout
             android:id="@+id/mathLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@drawable/background_selector_blue"
+            android:background="@color/blue_1"
             android:padding="10dp"
             android:clickable="true"
             android:layout_weight="1">
@@ -55,12 +55,12 @@
                 android:text="數學"
                 android:textSize="25dp"
                 android:textColor="@color/white_1"/>
-        </LinearLayout>
-        <LinearLayout
+        </com.kuo.gold3munite.MaterialLinearLayout>
+        <com.kuo.gold3munite.MaterialLinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@drawable/background_selector_green"
+            android:background="@color/green_1"
             android:padding="10dp"
             android:clickable="true"
             android:layout_weight="1">
@@ -77,7 +77,7 @@
                 android:text="物理"
                 android:textSize="25dp"
                 android:textColor="@color/white_1"/>
-        </LinearLayout>
+        </com.kuo.gold3munite.MaterialLinearLayout>
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
@@ -97,13 +97,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp">
 
-        <Button
+        <com.kuo.gold3munite.MaterialButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:padding="10dp"
             android:text="更多統計"
             android:textSize="25dp"
-            android:background="@drawable/background_selector_blue"/>
+            android:background="@color/blue_1"/>
 
     </RelativeLayout>
 </LinearLayout>

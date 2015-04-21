@@ -10,4 +10,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/button_black_sound"/>
+
+    <com.kuo.gold3munite.MaterialButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="挖係按鈕"
+        android:textColor="@color/white_1"
+        android:textSize="30dp"
+        android:background="@color/red_2"/>
 </LinearLayout>

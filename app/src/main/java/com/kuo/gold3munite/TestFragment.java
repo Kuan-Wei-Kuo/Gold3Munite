@@ -1,16 +1,15 @@
 package com.kuo.gold3munite;
 
 import android.support.v4.app.FragmentTransaction;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +25,10 @@ import lecho.lib.hellocharts.view.LineChartView;
 /**
  * Created by User on 2015/4/2.
  */
-public class TestFragment extends Fragment {
+public class TestFragment extends Fragment implements MaterialLinearLayout.OnAnimationListener{
 
-    private Handler handler = new Handler();
-    private int scoend = 0;
     private LineChartView lineChartView;
-    private LinearLayout englishLayout, mathLayout;
+    private MaterialLinearLayout englishLayout, mathLayout;
 
     @Nullable
     @Override
@@ -41,15 +38,19 @@ public class TestFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_test, container, false);
 
         lineChartView = (LineChartView) view.findViewById(R.id.lineChartView);
-        englishLayout = (LinearLayout) view.findViewById(R.id.englishLayout);
-        mathLayout = (LinearLayout) view.findViewById(R.id.mathLayout);
+        englishLayout = (MaterialLinearLayout) view.findViewById(R.id.englishLayout);
+        mathLayout = (MaterialLinearLayout) view.findViewById(R.id.mathLayout);
         englishLayout.setOnClickListener(linearLayoutClickListener);
         mathLayout.setOnClickListener(linearLayoutClickListener);
         setCharts();
 
+        englishLayout.setOnAnimationListener(this, 0);
+        mathLayout.setOnAnimationListener(this, 1);
 
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setDrawerListChanged(1);
+        mainActivity.setPopBack(false);
+        mainActivity.setMenuEnable(false);
         mainActivity.toolbar.setTitle("黃金三分鐘 - 測驗");
         mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
         mainActivity.setSupportActionBar(mainActivity.toolbar);
@@ -60,23 +61,15 @@ public class TestFragment extends Fragment {
         return view;
     }
 
-    private LinearLayout.OnClickListener linearLayoutClickListener = new View.OnClickListener() {
+    private MaterialLinearLayout.OnClickListener linearLayoutClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            FragmentManager fragmentManager = getFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             switch (view.getId()){
                 case R.id.englishLayout:
-                    EnglishTestFragment englishTestFragment = new EnglishTestFragment();
-                    fragmentTransaction.replace(R.id.contentFrame, englishTestFragment, "englishTestFragment");
-                    fragmentTransaction.addToBackStack("englishTestFragment");
-                    fragmentTransaction.commit();
+                    englishLayout.startAnimator();
                     break;
                 case R.id.mathLayout:
-                    MathTestFragment mathTestFragment = new MathTestFragment();
-                    fragmentTransaction.replace(R.id.contentFrame, mathTestFragment, "mathTestFragment");
-                    fragmentTransaction.addToBackStack("mathTestFragment");
-                    fragmentTransaction.commit();
+                    mathLayout.startAnimator();
                     break;
             }
         }
@@ -130,5 +123,34 @@ public class TestFragment extends Fragment {
         data.setAxisXBottom(axixX.setTextSize(17));
         lineChartView.setTop(20);
         lineChartView.setLineChartData(data);
+    }
+
+    @Override
+    public void onAnimationStart(int position) {
+        //Log.d("position", ""+position);
+        englishLayout.setClickable(false);
+        mathLayout.setClickable(false);
+    }
+
+    @Override
+    public void onAnimationEnd(int position) {
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        switch (position){
+            case 0:
+                EnglishTestFragment englishTestFragment = new EnglishTestFragment();
+                fragmentTransaction.replace(R.id.contentFrame, englishTestFragment, "englishTestFragment");
+                fragmentTransaction.addToBackStack("englishTestFragment");
+                fragmentTransaction.commit();
+                break;
+            case 1:
+                ScienceTestFragment scienceTestFragment = ScienceTestFragment.newIntance(ScienceTestFragment.MATH);
+                fragmentTransaction.replace(R.id.contentFrame, scienceTestFragment, "scienceTestFragment");
+                fragmentTransaction.addToBackStack("scienceTestFragment");
+                fragmentTransaction.commit();
+                break;
+        }
+        englishLayout.setClickable(true);
+        mathLayout.setClickable(true);
     }
 }
