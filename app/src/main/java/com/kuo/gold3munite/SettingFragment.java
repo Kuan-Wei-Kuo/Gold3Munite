@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by User on 2015/4/4.
  */
-public class SettingFragment extends Fragment implements MaterialLinearLayout.OnAnimationListener {
+public class SettingFragment extends Fragment implements MaterialLinearLayout.OnAnimationListener, DialogRecyclerFragment.OnWeekText, DialogRecyclerFragment.OnTypeText, DialogTimePickerFragment.OnTimePicker {
 
     private MaterialLinearLayout weekLayout, startTimeLayout, endTimeLayout, typeLayout, areaTimeLayout;
     private RelativeLayout soundLayout, shockLayout;
@@ -156,5 +156,20 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
         areaTimeLayout.setClickable(true);
         typeLayout.setClickable(true);
         weekLayout.setClickable(true);
+    }
+
+    @Override
+    public void getTime(String time, String timeA) {
+
+    }
+
+    @Override
+    public void getTypeText(String typeText) {
+
+    }
+
+    @Override
+    public void getWeekText(String weekText) {
+
     }
 }
