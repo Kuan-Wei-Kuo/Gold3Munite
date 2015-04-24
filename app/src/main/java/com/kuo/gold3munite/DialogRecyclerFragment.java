@@ -29,18 +29,20 @@ public class DialogRecyclerFragment extends DialogFragment{
     private LinearLayoutManager linearLayoutManager;
     private List<ListItem> listItems = new ArrayList<ListItem>();
     private Button cancel, enter;
-    private OnWeekText onWeekText;
-    private OnTypeText onTypeText;
+    private OnCheckBoxData onCheckBoxData;
+    private OnRadioButtonData onRadioButtonData;
+    private boolean[] count;
 
-    static DialogRecyclerFragment newIntance(int layoutId, int TYPE, String[] contentArray, String title){
+    static DialogRecyclerFragment newIntance(int layoutId, int TYPE, String[] contentArrays, String title, int position){
 
         DialogRecyclerFragment dialogRecyclerFragment = new DialogRecyclerFragment();
 
         Bundle bundle = new Bundle();
         bundle.putInt("layoutId", layoutId);
         bundle.putInt("TYPE", TYPE);
-        bundle.putStringArray("contentArray", contentArray);
+        bundle.putStringArray("contentArrays", contentArrays);
         bundle.putString("title", title);
+        bundle.putInt("position", position);
         dialogRecyclerFragment.setArguments(bundle);
 
         return dialogRecyclerFragment;
@@ -62,22 +64,23 @@ public class DialogRecyclerFragment extends DialogFragment{
 
         if(getArguments().getInt("TYPE") == CHECK_BOX){
 
-            String[] week = getArguments().getStringArray("contentArray");
+            String[] contentArrays = getArguments().getStringArray("contentArrays");
+            count = new boolean[contentArrays.length];
 
-            for(int i = 0 ; i < 7 ; i++){
+            for(int i = 0 ; i < contentArrays.length ; i++){
                 ListItem listItem = new ListItem();
-                listItem.chineseText = "星期" + week[i];
+                listItem.chineseText = "星期" + contentArrays[i];
+                count[i] = false;
                 listItems.add(listItem);
             }
-
             g3MRecyclerAdapter = new G3MRecyclerAdapter(getArguments().getInt("layoutId"), listItems, G3MRecyclerAdapter.DIALOG_WEEK, null);
 
         }else if(getArguments().getInt("TYPE") == RADIO_BUTTON) {
 
-            String[] week = getArguments().getStringArray("contentArray");
-            for (int i = 0; i < 3; i++) {
+            String[] contentArrays = getArguments().getStringArray("contentArrays");
+            for (int i = 0; i < contentArrays.length; i++) {
                 ListItem listItem = new ListItem();
-                listItem.chineseText = week[i];
+                listItem.chineseText = contentArrays[i];
                 listItems.add(listItem);
             }
 
@@ -104,11 +107,11 @@ public class DialogRecyclerFragment extends DialogFragment{
                     break;
                 case R.id.enter:
                     if(getArguments().getInt("TYPE") == CHECK_BOX){
-                        onWeekText = (OnWeekText) getTargetFragment();
-                        onWeekText.getWeekText(getWeekText());
+                        onCheckBoxData = (OnCheckBoxData) getTargetFragment();
+                        onCheckBoxData.getCheckData(getCount(), getArguments().getInt("position"));
                     }else if(getArguments().getInt("TYPE") == RADIO_BUTTON) {
-                        onTypeText = (OnTypeText) getTargetFragment();
-                        onTypeText.getTypeText(getTypeText());
+                        onRadioButtonData = (OnRadioButtonData) getTargetFragment();
+                        onRadioButtonData.getRadioData(getTypeText(), getArguments().getInt("position"));
                     }
                     getDialog().dismiss();
                     break;
@@ -116,16 +119,15 @@ public class DialogRecyclerFragment extends DialogFragment{
         }
     };
 
-    private String getWeekText(){
+    private boolean[] getCount(){
         List<ListItem> listItems = new ArrayList<ListItem>();
         listItems = g3MRecyclerAdapter.getListItems();
-        String weekText = "";
         for(int i = 0 ; i < listItems.size() ; i++){
             if(listItems.get(i).check){
-                weekText += listItems.get(i).chineseText + "、";
+                this.count[i] = true;
             }
         }
-        return weekText;
+        return this.count;
     }
 
     private String getTypeText(){
@@ -140,11 +142,11 @@ public class DialogRecyclerFragment extends DialogFragment{
         return typeText;
     }
 
-    public interface OnWeekText{
-        void getWeekText(String weekText);
+    public interface OnCheckBoxData{
+        void getCheckData(boolean[] count, int position);
     }
 
-    public interface OnTypeText{
-        void getTypeText(String typeText);
+    public interface OnRadioButtonData{
+        void getRadioData(String typeText, int position);
     }
 }

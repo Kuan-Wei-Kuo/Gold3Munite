@@ -1,5 +1,7 @@
 package com.kuo.gold3munite;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -23,10 +25,22 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapter.OnItemClickListener{
+
+    public static final String SETTING_NAME = "Settings";
+    public static final String FIRST_RUN = "firstRun";
+    public static final String START_TIME = "startTime";
+    public static final String END_TIME = "endTime";
+    public static final String AREA_TIME = "areaTime";
+    public static final String TYPE = "type";
+    public static final String WEEK_REPEAT = "weekRepeat";
+
+    private boolean firstRun;
 
     public Toolbar toolbar;
     public DrawerLayout drawerLayout;
@@ -47,6 +61,40 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences settings = getSharedPreferences(SETTING_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        firstRun = settings.getBoolean(FIRST_RUN, true);
+
+        Intent intent = new Intent();
+        intent.setClass(this, G3MService.class);
+        this.startService(intent);
+        if(firstRun){
+            Intent i = new Intent();
+            i.setClass(this, G3MService.class);
+            this.startService(i);
+
+            String[] week = {"0", "1", "2", "3", "4", "5", "6"};
+            String[] type = {"0", "1", "2"};
+            Set<String> weekArrays = new HashSet();
+            Set<String> typeArrays = new HashSet();
+
+            for(int j = 0 ; j < 3 ; j++){
+                typeArrays.add(type[j]);
+            }
+
+            for(int j = 0 ; j < 7 ; j++){
+                weekArrays.add(week[j]);
+            }
+
+            editor.putString(START_TIME, "09:00:00");
+            editor.putString(END_TIME, "20:00:00");
+            editor.putInt(AREA_TIME, 1800);
+            editor.putStringSet(TYPE, typeArrays);
+            editor.putStringSet(WEEK_REPEAT, weekArrays);
+            editor.commit();
+        }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
@@ -84,9 +132,6 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
         fragmentTransaction.replace(R.id.contentFrame, mainFragment, "mainFragment");
         fragmentTransaction.commit();
 
-        /*Intent i = new Intent();
-        i.setClass(this, G3MService.class);
-        this.startService(i);*/
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -191,5 +236,16 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
             }
         }
         g3MRecyclerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences settings = getSharedPreferences(SETTING_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        if (firstRun) {
+            editor.putBoolean(FIRST_RUN, false);
+        }
+        editor.commit();
     }
 }

@@ -1,5 +1,6 @@
 package com.kuo.gold3munite;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,22 +22,33 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Struct;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by User on 2015/4/4.
  */
-public class SettingFragment extends Fragment implements MaterialLinearLayout.OnAnimationListener, DialogRecyclerFragment.OnWeekText, DialogRecyclerFragment.OnTypeText, DialogTimePickerFragment.OnTimePicker {
+public class SettingFragment extends Fragment implements MaterialLinearLayout.OnAnimationListener, DialogRecyclerFragment.OnCheckBoxData, DialogRecyclerFragment.OnRadioButtonData, DialogTimePickerFragment.OnTimePicker {
 
     private MaterialLinearLayout weekLayout, startTimeLayout, endTimeLayout, typeLayout, areaTimeLayout;
     private RelativeLayout soundLayout, shockLayout;
     private TextView typeText, weekText, areaTimeText, startTimeText, endTimeText;
     private CheckBox soundCheckBox, shockCheckBox;
+    private SharedPreferences sharedPreferences;
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("kk:mm:ss");
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPreferences = getActivity().getSharedPreferences("Settings", 0);
 
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setMenuEnable(false);
@@ -45,7 +58,6 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
         mainActivity.actionBarDrawerToggle.syncState();
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
     }
 
     @Override
@@ -123,30 +135,30 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
     public void onAnimationEnd(int position) {
         switch (position){
             case 0:
-                DialogTimePickerFragment dialogTimePickerFragment = DialogTimePickerFragment.newIntance("開始時間");
+                DialogTimePickerFragment dialogTimePickerFragment = DialogTimePickerFragment.newIntance("開始時間", 0);
                 dialogTimePickerFragment.setTargetFragment(SettingFragment.this, 0);
                 dialogTimePickerFragment.show(getFragmentManager(), "dialogTimePickerFragment");
                 break;
             case 1:
-                dialogTimePickerFragment = DialogTimePickerFragment.newIntance("結束時間");
+                dialogTimePickerFragment = DialogTimePickerFragment.newIntance("結束時間", 1);
                 dialogTimePickerFragment.setTargetFragment(SettingFragment.this, 0);
                 dialogTimePickerFragment.show(getFragmentManager(), "dialogTimePickerFragment");
                 break;
             case 2:
-                String[] areaArray = {"半小時", "一小時", "二小時"};
-                DialogRecyclerFragment dialogRecyclerFragment = DialogRecyclerFragment.newIntance(R.layout.list_item_radiobutton, DialogRecyclerFragment.RADIO_BUTTON, areaArray, "間隔時間");
+                String[] areaArray = {"30分鐘", "60分鐘", "120分鐘"};
+                DialogRecyclerFragment dialogRecyclerFragment = DialogRecyclerFragment.newIntance(R.layout.list_item_radiobutton, DialogRecyclerFragment.RADIO_BUTTON, areaArray, "間隔時間", 0);
                 dialogRecyclerFragment.setTargetFragment(SettingFragment.this, 0);
                 dialogRecyclerFragment.show(getFragmentManager(), "dialogRecyclerFragment");
                 break;
             case 3:
                 String[] typeArray = {"英文", "數學", "物理"};
-                dialogRecyclerFragment = DialogRecyclerFragment.newIntance(R.layout.list_item_radiobutton, DialogRecyclerFragment.RADIO_BUTTON, typeArray, "類型");
+                dialogRecyclerFragment = DialogRecyclerFragment.newIntance(R.layout.list_item_radiobutton, DialogRecyclerFragment.CHECK_BOX, typeArray, "類型", 1);
                 dialogRecyclerFragment.setTargetFragment(SettingFragment.this, 0);
                 dialogRecyclerFragment.show(getFragmentManager(), "dialogRecyclerFragment");
                 break;
             case 4:
-                String[] weekArray = {"一", "二", "三", "四", "五", "六", "日"};
-                dialogRecyclerFragment = DialogRecyclerFragment.newIntance(R.layout.list_item_checkbox, DialogRecyclerFragment.CHECK_BOX, weekArray, "重複");
+                String[] weekArray = {"日", "一", "二", "三", "四", "五", "六"};
+                dialogRecyclerFragment = DialogRecyclerFragment.newIntance(R.layout.list_item_checkbox, DialogRecyclerFragment.CHECK_BOX, weekArray, "重複", 2);
                 dialogRecyclerFragment.setTargetFragment(SettingFragment.this, 0);
                 dialogRecyclerFragment.show(getFragmentManager(), "dialogRecyclerFragment");
                 break;
@@ -159,17 +171,115 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
     }
 
     @Override
-    public void getTime(String time, String timeA) {
+    public void getTime(int hour, int minute, int position) {
 
+        SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.SETTING_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        switch (position){
+            case 0:
+                //Log.d("開始時間", String.format("%02d", hour) + ":" + String.format("%02d", minute)+":00");
+                startTimeText.setText(time(hour, minute));
+                editor.putString(MainActivity.START_TIME, String.format("%02d", hour)+":" + String.format("%02d", minute)+":00");
+                break;
+            case 1:
+                //Log.d("結束時間", String.format("%02d", hour) + ":" + String.format("%02d", minute)+":00");
+                endTimeText.setText(time(hour, minute));
+                editor.putString(MainActivity.END_TIME, String.format("%02d", hour)+":" + String.format("%02d", minute)+":00");
+                break;
+        }
+
+        editor.commit();
     }
 
     @Override
-    public void getTypeText(String typeText) {
+    public void getCheckData(boolean[] count, int position) {
 
+        SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.SETTING_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+
+        switch (position){
+            case 1:
+                editor.putStringSet(MainActivity.TYPE, getDateArrays(count));
+                this.typeText.setText(getChineseText(count, 0));
+                break;
+            case 2:
+                editor.putStringSet(MainActivity.WEEK_REPEAT, getDateArrays(count));
+                this.weekText.setText(getChineseText(count, 1));
+                break;
+        }
+
+        editor.commit();
     }
 
     @Override
-    public void getWeekText(String weekText) {
+    public void getRadioData(String typeText, int position) {
+        SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.SETTING_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
 
+        switch (position){
+            case 0:
+                if(typeText.equals("30分鐘")){
+                    editor.putInt(MainActivity.AREA_TIME, 1800);
+                }else if(typeText.equals("60分鐘")){
+                    editor.putInt(MainActivity.AREA_TIME, 3600);
+                }else{
+                    editor.putInt(MainActivity.AREA_TIME, 7200);
+                }
+                this.areaTimeText.setText(typeText);
+                break;
+        }
+        editor.commit();
+    }
+
+    private String time(int hour, int minute){
+
+        String time = "";
+        String timeA = "";
+
+        if(hour > 12){
+            hour -= 12;
+            timeA = "下午";
+        }else{
+            timeA = "上午";
+        }
+
+        time = timeA + " - " + String.format("%02d", hour)+":" + String.format("%02d", minute);
+        return time;
+    }
+
+    private String getChineseText(boolean[] count, int type){
+
+        String chineseText = "";
+        String[] chineseData = new String[count.length];
+
+        if(type == 0){
+            String[] chineseType = {"英文", "數學", "物理"};
+            chineseData = chineseType;
+        }else{
+            String[] chineseDay = {"一","二","三","四","五","六","日"};
+            chineseData = chineseDay;
+        }
+
+        for(int i = 0 ; i < count.length ; i++){
+            if(count[i]){
+                chineseText += chineseData[i]+" ";
+            }
+        }
+
+        return chineseText;
+    }
+
+    private Set<String> getDateArrays(boolean[] count){
+
+        Set<String> setArrays = new HashSet<String>();
+
+        for(int i = 0 ; i < count.length ; i++){
+            if(count[i]){
+                setArrays.add(""+i);
+            }
+        }
+
+        return setArrays;
     }
 }

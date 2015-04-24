@@ -30,17 +30,19 @@ public class DialogTimePickerFragment extends DialogFragment {
     private Button cancel, enter;
     private OnTimePicker onTimePicker;
     private TextView title;
+    private int hour, minute;
 
     public interface OnTimePicker{
-        void getTime(String time, String timeA);
+        void getTime(int hour, int minute, int position);
     }
 
-    static DialogTimePickerFragment newIntance(String title){
+    static DialogTimePickerFragment newIntance(String title, int position){
 
         DialogTimePickerFragment dialogTimePickerFragment = new DialogTimePickerFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString("title", title);
+        bundle.putInt("position", position);
         dialogTimePickerFragment.setArguments(bundle);
 
         return dialogTimePickerFragment;
@@ -63,31 +65,8 @@ public class DialogTimePickerFragment extends DialogFragment {
         title.setText(getArguments().getString("title"));
 
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int mintue = calendar.get(Calendar.MINUTE);
-
-        int time_i = 0;
-        if(hour > 12){
-            timeA = "下午";
-            time_i = hour - mintue;
-        }else{
-            timeA = "上午";
-            time_i = hour;
-        }
-
-        if(mintue < 10){
-            time = time_i+":0"+mintue;
-            if(time_i < 10){
-                time = "0"+time_i+":0"+mintue;
-            }
-        }else if(time_i < 10){
-            time = "0"+time_i+":"+mintue;
-            if(mintue < 10){
-                time = "0"+time_i+":0"+mintue;
-            }
-        }else{
-            time = time_i+":"+mintue;
-        }
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
 
         timePicker.setOnTimeChangedListener(timePickerChangeListener);
         cancel.setOnClickListener(buttonClick);
@@ -99,28 +78,8 @@ public class DialogTimePickerFragment extends DialogFragment {
     private TimePicker.OnTimeChangedListener timePickerChangeListener = new TimePicker.OnTimeChangedListener() {
         @Override
         public void onTimeChanged(TimePicker timePicker, int i, int i2) {
-            int time_i = 0;
-            if(i > 12){
-                timeA = "下午";
-                time_i = i - 12;
-            }else{
-                timeA = "上午";
-                time_i = i;
-            }
-
-            if(i2 < 10){
-                time = time_i+":0"+i2;
-                if(time_i < 10){
-                    time = "0"+time_i+":0"+i2;
-                }
-            }else if(time_i < 10){
-                time = "0"+time_i+":"+i2;
-                if(i2 < 10){
-                    time = "0"+time_i+":0"+i2;
-                }
-            }else{
-                time = time_i+":"+i2;
-            }
+            hour = i;
+            minute = i2;
         }
     };
 
@@ -133,7 +92,7 @@ public class DialogTimePickerFragment extends DialogFragment {
                     break;
                 case R.id.enter:
                     onTimePicker = (OnTimePicker) getTargetFragment();
-                    onTimePicker.getTime(time, timeA);
+                    onTimePicker.getTime(hour, minute, getArguments().getInt("position"));
                     getDialog().dismiss();
                     break;
             }

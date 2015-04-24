@@ -27,6 +27,7 @@
                 android:id="@+id/startTimeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="5dp"
                 android:text="上午 - 09:00"
                 android:textSize="20dp"
                 android:textColor="@color/black_2"
@@ -50,9 +51,10 @@
                 android:id="@+id/endTimeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="5dp"
                 android:text="下午 - 16:00"
                 android:textSize="20dp"
-                android:textColor="@color/black_2"
+                android:textColor="@color/white_1"
                 android:background="@color/black_2"/>
         </com.kuo.gold3munite.MaterialLinearLayout>
         <com.kuo.gold3munite.MaterialLinearLayout
