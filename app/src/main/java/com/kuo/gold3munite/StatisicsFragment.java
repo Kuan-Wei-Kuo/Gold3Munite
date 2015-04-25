@@ -90,10 +90,10 @@ public class StatisicsFragment extends Fragment {
 
 
                 Notification notification = new Notification.Builder(getActivity())
-                        .setContentTitle("黃金分鐘...")
-                        .setSmallIcon(R.mipmap.learn_icon).build();
+                        .setContentTitle("黃金分鐘")
+                        .setSmallIcon(R.mipmap.ic_launcher).build();
                 notification.bigContentView = contentViews;
-                notification.defaults=Notification.DEFAULT_SOUND;
+                notification.defaults = Notification.DEFAULT_SOUND;
                 NotificationManager notificationManager=(NotificationManager)getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
                 notificationManager.notify(0, notification);
             }
