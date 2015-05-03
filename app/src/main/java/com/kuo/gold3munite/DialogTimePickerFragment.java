@@ -27,9 +27,8 @@ public class DialogTimePickerFragment extends DialogFragment {
     private String time = "";
     private String timeA = "";
     private TimePicker timePicker;
-    private Button cancel, enter;
     private OnTimePicker onTimePicker;
-    private TextView title;
+    private TextView title, cancel, enter;
     private int hour, minute;
 
     public interface OnTimePicker{
@@ -56,8 +55,8 @@ public class DialogTimePickerFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_timepicker, container, false);
 
         timePicker = (TimePicker) view.findViewById(R.id.timePicker);
-        cancel = (Button) view.findViewById(R.id.cancel);
-        enter = (Button) view.findViewById(R.id.enter);
+        cancel = (TextView) view.findViewById(R.id.cancel);
+        enter = (TextView) view.findViewById(R.id.enter);
         title = (TextView) view.findViewById(R.id.title);
 
         set_timepicker_text_colour();
@@ -83,7 +82,7 @@ public class DialogTimePickerFragment extends DialogFragment {
         }
     };
 
-    private Button.OnClickListener buttonClick = new View.OnClickListener() {
+    private TextView.OnClickListener buttonClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
@@ -123,7 +122,7 @@ public class DialogTimePickerFragment extends DialogFragment {
 
     private void set_numberpicker_text_colour(NumberPicker number_picker){
         final int count = number_picker.getChildCount();
-        final int color_blue = getResources().getColor(R.color.blue_1);
+        final int color_blue = getResources().getColor(R.color.GRAY_900);
 
         for(int i = 0; i < count; i++){
             View child = number_picker.getChildAt(i);
@@ -157,7 +156,7 @@ public class DialogTimePickerFragment extends DialogFragment {
                 try {
                     //pf.set(picker, getResources().getColor(R.color.my_orange));
                     //Log.v(TAG,"here");
-                    pf.set(picker, getResources().getDrawable(R.drawable.numpicker_divider_black));
+                    pf.set(picker, getResources().getDrawable(R.drawable.numpicker_divider_blue));
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                 } catch (Resources.NotFoundException e) {

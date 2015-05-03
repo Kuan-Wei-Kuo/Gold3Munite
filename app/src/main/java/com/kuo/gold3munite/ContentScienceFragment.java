@@ -1,13 +1,18 @@
 package com.kuo.gold3munite;
 
+import android.annotation.TargetApi;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
@@ -24,6 +29,7 @@ public class ContentScienceFragment extends Fragment {
     private WebView webView;
     private G3MSQLite g3MSQLite;
     private Cursor cursor;
+    private Handler handler = new Handler();
 
     static ContentScienceFragment newIntance(long rowId, int TYPE){
 
@@ -40,23 +46,10 @@ public class ContentScienceFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         g3MSQLite = new G3MSQLite(getActivity());
         g3MSQLite.OpenDB();
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setPopBack(true);
-        mainActivity.setMenuEnable(false);
-        if(getArguments().getInt("TYPE") == MATH){
-            mainActivity.toolbar.setTitle("數學");
-            mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
-        }else if(getArguments().getInt("TYPE") == PHYSICS){
-            mainActivity.toolbar.setTitle("物理");
-            mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.green_1));
-        }
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-
+        setToolbar();
     }
 
     @Override
@@ -67,21 +60,25 @@ public class ContentScienceFragment extends Fragment {
         scienceText = (TextView) view.findViewById(R.id.scienceText);
         webView = (WebView) view.findViewById(R.id.webView);
 
-        webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(webViewClient);
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setSupportZoom(true);
         webView.getSettings().setBuiltInZoomControls(true);
-        if(getArguments().getInt("TYPE") == MATH){
-            cursor = g3MSQLite.getScience(getArguments().getLong("rowId"), G3MSQLite.MATH);
-            webView.loadUrl("file:///android_asset/MathFormula/"+ G3MSQLite.MATH_FORMULA_URL+cursor.getLong(0) +".html");
-        }else if(getArguments().getInt("TYPE") == PHYSICS){
-            cursor = g3MSQLite.getScience(getArguments().getLong("rowId"), G3MSQLite.PHYSICS);
-            webView.loadUrl("file:///android_asset/PhysicsFormula/"+ G3MSQLite.PHYSICS_FORMULA_URL+cursor.getLong(0) +".JPG");
-        }
 
-        scienceText.setText(cursor.getString(1));
+        handler.post(uiRunnable);
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if(handler != null){
+            handler.removeCallbacks(uiRunnable);
+        }
+
+        g3MSQLite.CloseDB();
     }
 
     private WebViewClient webViewClient = new WebViewClient() {
@@ -91,5 +88,41 @@ public class ContentScienceFragment extends Fragment {
             return true;
         }
     };
+
+    private Runnable uiRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if(getArguments().getInt("TYPE") == MATH){
+                cursor = g3MSQLite.getScience(getArguments().getLong("rowId"), G3MSQLite.MATH);
+                webView.loadUrl("file:///android_asset/MathFormula/"+ G3MSQLite.MATH_FORMULA_URL+cursor.getLong(0) +".html");
+            }else if(getArguments().getInt("TYPE") == PHYSICS){
+                cursor = g3MSQLite.getScience(getArguments().getLong("rowId"), G3MSQLite.PHYSICS);
+                webView.loadUrl("file:///android_asset/PhysicsFormula/"+ G3MSQLite.PHYSICS_FORMULA_URL+cursor.getLong(0) +".JPG");
+            }
+            scienceText.setText(cursor.getString(1));
+        }
+    };
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setToolbar(){
+
+        Window window = getActivity().getWindow();
+        MainActivity mainActivity = (MainActivity) getActivity();
+
+        mainActivity.setPopBack(true);
+        mainActivity.setMenuEnable(false);
+        if(getArguments().getInt("TYPE") == MATH){
+            mainActivity.toolbar.setTitle("數學");
+            window.setStatusBarColor(getResources().getColor(R.color.BLUE_A400));
+            mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.BLUE_A400));
+        }else if(getArguments().getInt("TYPE") == PHYSICS){
+            mainActivity.toolbar.setTitle("物理");
+            window.setStatusBarColor(getResources().getColor(R.color.GREEN_500));
+            mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.GREEN_500));
+        }
+        mainActivity.setSupportActionBar(mainActivity.toolbar);
+        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
 
 }

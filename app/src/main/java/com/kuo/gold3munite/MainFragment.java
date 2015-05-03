@@ -1,17 +1,17 @@
 package com.kuo.gold3munite;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.view.Window;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,6 @@ import java.util.List;
  */
 public class MainFragment extends Fragment {
 
-    private WebView webView;
     private SlidingTabLayout slidingTabLayout;
     private ViewPager viewPager;
     private List<Fragment> fragmentList = new ArrayList<Fragment>();
@@ -32,14 +31,12 @@ public class MainFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-
         int backStackCount = getFragmentManager().getBackStackEntryCount();
         for (int i = 0; i < backStackCount; i++) {
             // Get the back stack fragment id.
             int backStackId = getFragmentManager().getBackStackEntryAt(i).getId();
             getFragmentManager().popBackStack(backStackId, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        Log.e("popBackStack",  getFragmentManager().getBackStackEntryCount()+"");
 
         fragmentList.clear();
         titleList.clear();
@@ -60,36 +57,38 @@ public class MainFragment extends Fragment {
         slidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
             public int getIndicatorColor(int position) {
-                if(viewPager.getCurrentItem() == 0){
-                    return getResources().getColor(R.color.red_2);
-                }else if(viewPager.getCurrentItem() == 1){
-                    return getResources().getColor(R.color.blue_1);
-                }else{
-                    return getResources().getColor(R.color.green_1);
+                if (viewPager.getCurrentItem() == 0) {
+                    return getResources().getColor(R.color.PINKY_500);
+                } else if (viewPager.getCurrentItem() == 1) {
+                    return getResources().getColor(R.color.BLUE_A400);
+                } else {
+                    return getResources().getColor(R.color.GREEN_500);
                 }
             }
         });
         slidingTabLayout.setViewPager(viewPager);
 
+        setToolbar();
+
+        return view;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setToolbar(){
+
+        Window window = getActivity().getWindow();
+        window.setStatusBarColor(getResources().getColor(R.color.BLUE_A400));
+
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setPopBack(false);
         mainActivity.setMenuEnable(false);
         mainActivity.setDrawerListChanged(0);
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
+        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.BLUE_A400));
         mainActivity.toolbar.setTitle("黃金三分鐘");
         mainActivity.setSupportActionBar(mainActivity.toolbar);
         mainActivity.actionBarDrawerToggle.syncState();
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
-        return view;
     }
-
-    private WebViewClient webViewClient = new WebViewClient() {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-    };
 }

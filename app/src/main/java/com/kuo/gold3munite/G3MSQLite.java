@@ -116,18 +116,6 @@ public class G3MSQLite extends SQLiteOpenHelper {
             db.close();
     }
 
-    public long Update(boolean state, String table, long id){
-        ContentValues values = new ContentValues();
-        values.put(STATE, state);
-        return db.update(table, values,  _ID + "=" + id, null);
-    }
-
-    public long append(int id, String table){
-        ContentValues values = new ContentValues();
-        values.put(TAG_ID, id);
-        return db.insert(table, null, values);
-    }
-
     public Cursor getEnglish(){
         return db.query(ENG_TABLE_NAME, new String[] {_ID, ENG_WORD,  ENG_PT, CNI_WORD, CNI_EX01, ENG_EX01, CNI_EX02, ENG_EX02, STATE}, null, null, null, null, null);
     }
@@ -171,39 +159,31 @@ public class G3MSQLite extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getNotificationTimer(){
-        return db.query("setting_table", new String[] {_ID, TIMER_TEXT , TIMER_TYPE_TEXT, TYPE_TEXT, WEEK_TEXT, STATE, SHOCK_STATE, SOUND_STATE, INTERVAL_TIME}, null, null, null, null, null);
+    public long insterStatisics(String date, String kind, String type){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DATE, date);
+        contentValues.put(KIND, kind);
+        contentValues.put(TYPE, type);
+        return db.insert(STATISTICS_DATA_TABLE_NAME, null, contentValues);
     }
-
-    public Cursor getNotificationTimer(long rowId){
-        return db.query("setting_table", new String[] {_ID, TIMER_TEXT , TIMER_TYPE_TEXT, TYPE_TEXT, WEEK_TEXT, STATE, SHOCK_STATE, SOUND_STATE, INTERVAL_TIME}, _ID + "-" + rowId, null, null, null, null, null);
-    }
-
-    public long insertNotificationTimer(String timerText, String timerTypeText, String typeText, String weekText, int state, int  shockState, int soundState, int intervalTime){
-        ContentValues values = new ContentValues();
-        values.put(TIMER_TEXT, timerText);
-        values.put(TIMER_TYPE_TEXT, timerTypeText);
-        values.put(TYPE_TEXT, typeText);
-        values.put(WEEK_TEXT, weekText);
-        values.put(STATE, state);
-        values.put(SHOCK_STATE, shockState);
-        values.put(SOUND_STATE, soundState);
-        values.put(INTERVAL_TIME, intervalTime);
-        return db.insert("setting_table", null, values);
-    }
-
-    public long setNotificationTimerCheck(long rowId, int state){
-        ContentValues values = new ContentValues();
-        values.put(STATE, state);
-        return db.insert("setting_table", null, values);
-    }
-
     public Cursor getStatisics(){
         return db.query(STATISTICS_DATA_TABLE_NAME, new String[] {_ID, DATE, KIND, TYPE}, null, null, null, null, null, null);
     }
 
     public Cursor getStatisics(long id){
         Cursor mCursor = db.query(STATISTICS_DATA_TABLE_NAME, new String[] {_ID, DATE, KIND, TYPE}, _ID + "=" + id, null, null, null, null, null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
+
+    public Cursor getStatisics(String data, String kind, String type){
+        Cursor mCursor = db.query(STATISTICS_DATA_TABLE_NAME, new String[] {_ID, DATE, KIND, TYPE},
+                                    DATE + "=" +  "'" + data + "'" + " AND " +
+                                    KIND + "=" + "'" + kind + "'" + " AND " +
+                                    TYPE + "=" + "'" + type + "'",
+                                    null, null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }

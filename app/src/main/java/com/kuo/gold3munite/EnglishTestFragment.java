@@ -1,11 +1,14 @@
 package com.kuo.gold3munite;
 
+import android.annotation.TargetApi;
 import android.app.Service;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -14,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,28 +37,24 @@ public class EnglishTestFragment extends Fragment {
     private EditText englishEdit;
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private Handler handler = new Handler();
+
     private int scoend = 0;
     private int[] englishRowId;
     private G3MSQLite g3MSQLite;
     private Cursor cursor, cursorQuestion;
     private Button clearButton, enterButton;
     private int questionCount = 0;
+    private Handler medialPlayerHandler;
+    private HandlerThread medialPlayerThread;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setToolbar();
+
         g3MSQLite = new G3MSQLite(getActivity());
         g3MSQLite.OpenDB();
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setPopBack(true);
-        mainActivity.setMenuEnable(false);
-        mainActivity.toolbar.setTitle("英文測驗");
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.red_2));
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         cursor = g3MSQLite.getEnglish();
 
@@ -84,7 +84,12 @@ public class EnglishTestFragment extends Fragment {
         mediaPlayer.setAudioStreamType (AudioManager.STREAM_MUSIC);
 
         cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
-        setMediaPlayer();
+
+        medialPlayerThread = new HandlerThread("medialPlayerThread");
+        medialPlayerThread.start();
+
+        medialPlayerHandler = new Handler(medialPlayerThread.getLooper());
+        medialPlayerHandler.post(medialPlayerRunnable);
 
         soundButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,8 +99,6 @@ public class EnglishTestFragment extends Fragment {
         });
         englishEdit.setHint(setStringPorkerRandom(cursorQuestion.getString(1)));
         chineseText.setText(cursorQuestion.getString(3));
-
-        //handler.postDelayed(runTimerStop, 1000);
 
         enterButton.setOnClickListener(buttonClcikListener);
         clearButton.setOnClickListener(buttonClcikListener);
@@ -107,27 +110,29 @@ public class EnglishTestFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        g3MSQLite.CloseDB();
-        mediaPlayer.release();
         handler.removeCallbacks(runTimerStop);
 
-        handler = null;
-        mediaPlayer = null;
-        g3MSQLite = null;
+        if(medialPlayerHandler != null){
+            medialPlayerHandler.removeCallbacks(medialPlayerRunnable);
+        }
+        if(medialPlayerThread != null){
+            medialPlayerThread.quit();
+        }
+
+        g3MSQLite.CloseDB();
+        mediaPlayer.release();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         handler.removeCallbacks(runTimerStop);
-        g3MSQLite.CloseDB();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         handler.postDelayed(runTimerStop, 1000);
-        g3MSQLite.OpenDB();
     }
 
     private Runnable runTimerStop = new Runnable()
@@ -140,16 +145,35 @@ public class EnglishTestFragment extends Fragment {
                 scoend++;
                 handler.postDelayed(runTimerStop, 1000);
             }else{
+
+                questionCount++;
                 scoend = 0;
+                cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
+
                 handler.postDelayed(runTimerStop, 1000);
-                timerText.setText("時間結束，銘謝惠顧!");
+                medialPlayerHandler.post(medialPlayerRunnable);
+
                 Vibrator vibrator =  (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
                 vibrator.vibrate(500);
-                questionCount++;
-                cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
+
+                timerText.setText("答題時間結束!");
+
                 englishEdit.setHint(setStringPorkerRandom(cursorQuestion.getString(1)));
                 chineseText.setText(cursorQuestion.getString(3));
-                setMediaPlayer();
+            }
+        }
+    };
+
+
+    private Runnable medialPlayerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(getActivity(), Uri.parse("https://translate.google.com.tw/translate_tts?ie=UTF-8&q="+ cursorQuestion.getString(1) +"&tl=en&total=1&idx=0&textlen=5&client=t&prev=input&sa=N"));
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     };
@@ -169,7 +193,7 @@ public class EnglishTestFragment extends Fragment {
                         englishEdit.setText("");
                         englishEdit.setHint(setStringPorkerRandom(cursorQuestion.getString(1)));
                         chineseText.setText(cursorQuestion.getString(3));
-                        setMediaPlayer();
+                        medialPlayerHandler.post(medialPlayerRunnable);
                     }else{
                         Toast.makeText(view.getContext(), "答案錯誤！", Toast.LENGTH_SHORT).show();
                         Vibrator vibrator =  (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
@@ -179,16 +203,6 @@ public class EnglishTestFragment extends Fragment {
             }
         }
     };
-
-    private void setMediaPlayer(){
-        try {
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(getActivity(), Uri.parse("https://translate.google.com.tw/translate_tts?ie=UTF-8&q="+ cursorQuestion.getString(1) +"&tl=en&total=1&idx=0&textlen=5&client=t&prev=input&sa=N"));
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private int[] setPorkerRandom(int[] result){
         Random random = new Random();
@@ -222,5 +236,21 @@ public class EnglishTestFragment extends Fragment {
             porkerString += porkerChar[i];
         }
         return porkerString;
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setToolbar(){
+
+        Window window = getActivity().getWindow();
+        MainActivity mainActivity = (MainActivity) getActivity();
+
+        window.setStatusBarColor(getResources().getColor(R.color.PINKY_500));
+        mainActivity.setPopBack(true);
+        mainActivity.setMenuEnable(false);
+        mainActivity.toolbar.setTitle("英文測驗");
+        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.PINKY_500));
+        mainActivity.setSupportActionBar(mainActivity.toolbar);
+        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 }

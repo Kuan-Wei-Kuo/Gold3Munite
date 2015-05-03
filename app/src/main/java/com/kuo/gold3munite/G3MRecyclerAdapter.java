@@ -152,6 +152,7 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
                 }
             });
         }else if(TYPE == DAWER_LIST){
+
             holder.icon.setBackgroundResource(listItems.get(position).icon);
             holder.icon.getBackground().setAlpha(150);
             holder.chineseText.setText(listItems.get(position).chineseText);

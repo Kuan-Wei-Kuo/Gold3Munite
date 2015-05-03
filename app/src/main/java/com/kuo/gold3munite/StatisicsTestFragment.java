@@ -1,25 +1,18 @@
 package com.kuo.gold3munite;
 
-import android.annotation.TargetApi;
 import android.database.Cursor;
-import android.os.Build;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import lecho.lib.hellocharts.model.Axis;
@@ -31,15 +24,14 @@ import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.LineChartView;
 
 /**
- * Created by User on 2015/4/2.
+ * Created by User on 2015/5/3.
  */
-public class TestFragment extends Fragment implements MaterialLinearLayout.OnAnimationListener{
+public class StatisicsTestFragment extends Fragment {
 
-    private LineChartView lineChartView;
-    private MaterialLinearLayout englishLayout, mathLayout;
-    private G3MSQLite g3MSQLite;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd");
     private SimpleDateFormat simpleDayFormat = new SimpleDateFormat("MM.dd");
+    private LineChartView lineChartView;
+    private G3MSQLite g3MSQLite;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,49 +39,22 @@ public class TestFragment extends Fragment implements MaterialLinearLayout.OnAni
 
         g3MSQLite = new G3MSQLite(getActivity());
         g3MSQLite.OpenDB();
+
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        setToolbar();
-
-        View view = inflater.inflate(R.layout.fragment_test, container, false);
+        View view = inflater.inflate(R.layout.fragment_test_statisics, container, false);
 
         lineChartView = (LineChartView) view.findViewById(R.id.lineChartView);
-        englishLayout = (MaterialLinearLayout) view.findViewById(R.id.englishLayout);
-        mathLayout = (MaterialLinearLayout) view.findViewById(R.id.mathLayout);
-        englishLayout.setOnClickListener(linearLayoutClickListener);
-        mathLayout.setOnClickListener(linearLayoutClickListener);
+
         setCharts();
 
-        englishLayout.setOnAnimationListener(this, 0);
-        mathLayout.setOnAnimationListener(this, 1);
+        g3MSQLite.CloseDB();
 
         return view;
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        g3MSQLite.CloseDB();
-    }
-
-    private MaterialLinearLayout.OnClickListener linearLayoutClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()){
-                case R.id.englishLayout:
-                    englishLayout.startAnimator();
-                    break;
-                case R.id.mathLayout:
-                    mathLayout.startAnimator();
-                    break;
-            }
-        }
-    };
 
     private void setCharts(){
         Calendar calendar = Calendar.getInstance();
@@ -166,54 +131,5 @@ public class TestFragment extends Fragment implements MaterialLinearLayout.OnAni
         data.setAxisYLeft(axixY);
         data.setAxisXBottom(axixX);
         lineChartView.setLineChartData(data);
-    }
-
-    @Override
-    public void onAnimationStart(int position) {
-        //Log.d("position", ""+position);
-        englishLayout.setClickable(false);
-        mathLayout.setClickable(false);
-    }
-
-    @Override
-    public void onAnimationEnd(int position) {
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        switch (position){
-            case 0:
-                g3MSQLite.insterStatisics(dateFormat.format(new Date()), "english", "test");
-                EnglishTestFragment englishTestFragment = new EnglishTestFragment();
-                fragmentTransaction.replace(R.id.contentFrame, englishTestFragment, "englishTestFragment");
-                fragmentTransaction.addToBackStack("englishTestFragment");
-                fragmentTransaction.commit();
-                break;
-            case 1:
-                g3MSQLite.insterStatisics(dateFormat.format(new Date()), "math", "test");
-                ScienceTestFragment scienceTestFragment = ScienceTestFragment.newIntance(ScienceTestFragment.MATH);
-                fragmentTransaction.replace(R.id.contentFrame, scienceTestFragment, "scienceTestFragment");
-                fragmentTransaction.addToBackStack("scienceTestFragment");
-                fragmentTransaction.commit();
-                break;
-        }
-        englishLayout.setClickable(true);
-        mathLayout.setClickable(true);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setToolbar(){
-
-        Window window = getActivity().getWindow();
-        window.setStatusBarColor(getResources().getColor(R.color.BLUE_A400));
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setDrawerListChanged(1);
-        mainActivity.setPopBack(false);
-        mainActivity.setMenuEnable(false);
-        mainActivity.toolbar.setTitle("黃金三分鐘 - 測驗");
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.BLUE_A400));
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.actionBarDrawerToggle.syncState();
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 }

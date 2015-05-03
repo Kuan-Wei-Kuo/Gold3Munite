@@ -23,12 +23,11 @@ public class DialogRecyclerFragment extends DialogFragment{
     public static final int CHECK_BOX = 0;
     public static final int RADIO_BUTTON = 1;
 
-    private TextView title;
+    private TextView title, cancel, enter;
     private RecyclerView recyclerView;
     private G3MRecyclerAdapter g3MRecyclerAdapter;
     private LinearLayoutManager linearLayoutManager;
     private List<ListItem> listItems = new ArrayList<ListItem>();
-    private Button cancel, enter;
     private OnCheckBoxData onCheckBoxData;
     private OnRadioButtonData onRadioButtonData;
     private boolean[] count;
@@ -57,8 +56,8 @@ public class DialogRecyclerFragment extends DialogFragment{
 
         title = (TextView) view.findViewById(R.id.title);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        cancel = (Button) view.findViewById(R.id.cancel);
-        enter = (Button) view.findViewById(R.id.enter);
+        cancel = (TextView) view.findViewById(R.id.cancel);
+        enter = (TextView) view.findViewById(R.id.enter);
 
         title.setText(getArguments().getString("title"));
 
@@ -98,7 +97,7 @@ public class DialogRecyclerFragment extends DialogFragment{
         return view;
     }
 
-    private Button.OnClickListener buttonClick = new View.OnClickListener() {
+    private TextView.OnClickListener buttonClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             switch (view.getId()) {

@@ -1,7 +1,9 @@
 package com.kuo.gold3munite;
 
+import android.annotation.TargetApi;
 import android.app.Service;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -10,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -53,31 +56,13 @@ public class ScienceTestFragment extends Fragment {
 
         g3MSQLite = new G3MSQLite(getActivity());
         g3MSQLite.OpenDB();
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-
-        if(getArguments().getInt("TYPE") == MATH){
-            cursor = g3MSQLite.getScience(G3MSQLite.MATH);
-            mainActivity.toolbar.setTitle("數學測驗");
-        }else if(getArguments().getInt("TYPE") == PHYSICS){
-            cursor = g3MSQLite.getScience(G3MSQLite.PHYSICS);
-            mainActivity.toolbar.setTitle("物理測驗");
-        }
-
+        setToolbar();
         scienceRowId = new int[cursor.getCount()];
 
         for(int i = 0 ; i < cursor.getCount() ; i++){
             scienceRowId[i] = i+1;
         }
-
         scienceRowId = setPorkerRandom(scienceRowId);
-
-        mainActivity.setPopBack(true);
-        mainActivity.setMenuEnable(false);
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     @Override
@@ -218,5 +203,36 @@ public class ScienceTestFragment extends Fragment {
             result[i] = temp;
         }
         return result;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        g3MSQLite.CloseDB();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setToolbar(){
+
+        Window window = getActivity().getWindow();
+        MainActivity mainActivity = (MainActivity) getActivity();
+
+        if(getArguments().getInt("TYPE") == MATH){
+            cursor = g3MSQLite.getScience(G3MSQLite.MATH);
+            mainActivity.toolbar.setTitle("數學測驗");
+            window.setStatusBarColor(getResources().getColor(R.color.BLUE_A400));
+            mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.BLUE_A400));
+        }else if(getArguments().getInt("TYPE") == PHYSICS){
+            cursor = g3MSQLite.getScience(G3MSQLite.PHYSICS);
+            mainActivity.toolbar.setTitle("物理測驗");
+            window.setStatusBarColor(getResources().getColor(R.color.GREEN_500));
+            mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.GREEN_500));
+        }
+        mainActivity.setPopBack(true);
+        mainActivity.setMenuEnable(false);
+        mainActivity.setSupportActionBar(mainActivity.toolbar);
+        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 }

@@ -1,5 +1,7 @@
 package com.kuo.gold3munite;
 
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -19,64 +21,101 @@ import java.util.List;
 /**
  * Created by User on 2015/4/3.
  */
-public class EnglishFragment extends Fragment implements G3MRecyclerAdapter.OnItemClickListener{
+public class EnglishFragment extends Fragment{
 
     private RecyclerView recyclerView;
     private G3MRecyclerAdapter g3MRecyclerAdapter;
     private LinearLayoutManager linearLayoutManager;
     private G3MSQLite g3MSQLite;
     private List<ListItem> listItems = new ArrayList<ListItem>();
+    private MainActivity mainActivity;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        g3MSQLite = new G3MSQLite(getActivity());
+        g3MSQLite.OpenDB();
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_recycler, container, false);
-
-        g3MSQLite = new G3MSQLite(view.getContext());
-        g3MSQLite.OpenDB();
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        linearLayoutManager = new LinearLayoutManager(view.getContext());
 
         listItems.clear();
-        Cursor cursor = g3MSQLite.getEnglish();
 
-        if(cursor.getCount() != 0){
-            cursor.moveToFirst();
-            for (int i = 0; i < cursor.getCount() ; i++){
-                if(cursor.getInt(8) == 1){
-                    ListItem listItem = new ListItem();
-                    listItem.rowId = cursor.getLong(0);
-                    listItem.englishText = cursor.getString(1);
-                    //Log.d("englishText", cursor.getString(1));
-                    listItem.chineseText = cursor.getString(3);
-                    listItem.exampleEnglishText = cursor.getString(5);
-                    listItem.exampleChineseText = cursor.getString(4);
-                    listItems.add(listItem);
-                }
-                cursor.moveToNext();
-            }
-        }
-
-        g3MSQLite.CloseDB();
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(view.getContext());
-        g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_english, listItems, G3MRecyclerAdapter.ENGLISH, this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setAdapter(g3MRecyclerAdapter);
+        Thread uiThread = new Thread(uiRunnable);
+        uiThread.start();
 
         return view;
     }
 
     @Override
-    public void onClick(long rowId, int position) {
+    public void onDestroy() {
+        super.onDestroy();
 
-        FragmentManager fragmentManager = getParentFragment().getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if(handler != null){
+            handler.removeMessages(1);
+            handler.removeCallbacks(uiRunnable);
+        }
 
-        ContentEnglishFragment contentEnglishFragment = ContentEnglishFragment.newIntance(rowId, position);
-        fragmentTransaction.replace(R.id.contentFrame, contentEnglishFragment, "contentEnglishFragment");
-        fragmentTransaction.addToBackStack("englishFragmeny");
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.commit();
+        g3MSQLite.CloseDB();
     }
+
+    private G3MRecyclerAdapter.OnItemClickListener listItemClickListener = new G3MRecyclerAdapter.OnItemClickListener() {
+        @Override
+        public void onClick(long rowId, int position) {
+
+            FragmentManager fragmentManager = getParentFragment().getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+            ContentEnglishFragment contentEnglishFragment = ContentEnglishFragment.newIntance(rowId, position);
+            fragmentTransaction.replace(R.id.contentFrame, contentEnglishFragment, "contentEnglishFragment");
+            fragmentTransaction.addToBackStack("englishFragmeny");
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            fragmentTransaction.commit();
+        }
+    };
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == 1){
+                g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_english, listItems, G3MRecyclerAdapter.ENGLISH, listItemClickListener);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                recyclerView.setAdapter(g3MRecyclerAdapter);
+            }
+        }
+    };
+
+    private Runnable uiRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Message message = handler.obtainMessage(1);
+            Cursor cursor = g3MSQLite.getEnglish();
+
+            if(cursor.getCount() != 0){
+                cursor.moveToFirst();
+                for (int i = 0; i < cursor.getCount() ; i++){
+                    if(cursor.getInt(8) == 1){
+                        ListItem listItem = new ListItem();
+                        listItem.rowId = cursor.getLong(0);
+                        listItem.englishText = cursor.getString(1);
+                        listItem.chineseText = cursor.getString(3);
+                        listItem.exampleEnglishText = cursor.getString(5);
+                        listItem.exampleChineseText = cursor.getString(4);
+                        listItems.add(listItem);
+                    }
+                    cursor.moveToNext();
+                }
+            }
+            handler.sendMessage(message);
+        }
+    };
 }

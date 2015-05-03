@@ -22,10 +22,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Array;
 import java.sql.Struct;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -85,6 +87,40 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
         areaTimeLayout = (MaterialLinearLayout) view.findViewById(R.id.areaTimeLayout);
         soundLayout = (RelativeLayout) view.findViewById(R.id.soundLayout);
         shockLayout = (RelativeLayout) view.findViewById(R.id.shockLayout);
+
+        int[] areaArrays = {1800, 3600, 7200};
+        Set<String> typeArrays = sharedPreferences.getStringSet(MainActivity.TYPE, null);
+        Set<String> weekArrays = sharedPreferences.getStringSet(MainActivity.WEEK_REPEAT, null);
+        Object[] typeObjects = typeArrays.toArray();
+        Object[] weekObjects = weekArrays.toArray();
+        String[] chineseMinArrays = {"30分鐘", "60分鐘", "120分鐘"};
+        String[] chineseTypeArrays = {"英文", "數學", "物理"};
+        String[] chineseDay = {"周一","周二","周三","周四","周五","周六","周日"};
+        String chineseMin = "";
+        String chineseType = "";
+        String chineseWeek = "";
+
+        Arrays.sort(weekObjects);
+
+        for(int i = 0 ; i < areaArrays.length ; i++){
+            if(sharedPreferences.getInt(MainActivity.AREA_TIME, 0) == areaArrays[i]){
+                chineseMin = chineseMinArrays[i];
+            }
+        }
+
+        for(int i = 0 ; i < typeObjects.length ; i++){
+            chineseType += chineseTypeArrays[Integer.valueOf(typeObjects[i].toString())] + " ";
+        }
+
+        for(int i = 0 ; i < weekObjects.length ; i++){
+            chineseWeek += chineseDay[Integer.valueOf(weekObjects[i].toString())] + " ";
+        }
+
+        startTimeText.setText(sharedPreferences.getString(MainActivity.START_TIME, ""));
+        endTimeText.setText(sharedPreferences.getString(MainActivity.END_TIME, ""));
+        areaTimeText.setText(chineseMin);
+        typeText.setText(chineseType);
+        weekText.setText(chineseWeek);
 
         startTimeLayout.setOnAnimationListener(this, 0);
         endTimeLayout.setOnAnimationListener(this, 1);
@@ -152,7 +188,7 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
                 break;
             case 3:
                 String[] typeArray = {"英文", "數學", "物理"};
-                dialogRecyclerFragment = DialogRecyclerFragment.newIntance(R.layout.list_item_radiobutton, DialogRecyclerFragment.CHECK_BOX, typeArray, "類型", 1);
+                dialogRecyclerFragment = DialogRecyclerFragment.newIntance(R.layout.list_item_checkbox, DialogRecyclerFragment.CHECK_BOX, typeArray, "類型", 1);
                 dialogRecyclerFragment.setTargetFragment(SettingFragment.this, 0);
                 dialogRecyclerFragment.show(getFragmentManager(), "dialogRecyclerFragment");
                 break;
@@ -185,7 +221,7 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
             case 1:
                 //Log.d("結束時間", String.format("%02d", hour) + ":" + String.format("%02d", minute)+":00");
                 endTimeText.setText(time(hour, minute));
-                editor.putString(MainActivity.END_TIME, String.format("%02d", hour)+":" + String.format("%02d", minute)+":00");
+                editor.putString(MainActivity.END_TIME, String.format("%02d", hour) + ":" + String.format("%02d", minute) + ":00");
                 break;
         }
 

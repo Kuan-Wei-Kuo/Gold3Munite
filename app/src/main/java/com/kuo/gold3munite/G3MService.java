@@ -36,6 +36,7 @@ public class G3MService extends Service {
     private NotificationManager notificationManager;
     private RemoteViews contentViewsEnglish;
     private RemoteViews contentViewsScience;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd");
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("kk:mm:ss");
     private SharedPreferences settings;
     private Long stratTime;
@@ -69,7 +70,7 @@ public class G3MService extends Service {
         return null;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
@@ -81,6 +82,7 @@ public class G3MService extends Service {
         notification = new Notification.Builder(getApplicationContext())
                 .setContentTitle("黃金分鐘")
                 .setContentText("下拉學習更多...")
+                .setColor(getResources().getColor(R.color.BLUE_A400))
                 .setSmallIcon(R.mipmap.ic_launcher).build();
         notification.defaults = Notification.DEFAULT_SOUND;
 
@@ -122,7 +124,7 @@ public class G3MService extends Service {
             calendar = Calendar.getInstance();
             weekArrays = settings.getStringSet(MainActivity.WEEK_REPEAT, null).toArray();
 
-            for(int i = 0 ; i < 7 ; i++){
+            for(int i = 0 ; i < weekArrays.length ; i++){
                 if((calendar.get(Calendar.DAY_OF_WEEK)-1+"").equals(weekArrays[i].toString())){
                     pushNotification();
                 }
@@ -148,6 +150,7 @@ public class G3MService extends Service {
 
                 if((((hour*3600)+(minute*60))%settings.getInt(MainActivity.AREA_TIME, 0)) == 0){
                     if(!pushState){
+                        Log.d("if pushState", pushState+"");
                         pushState = true;
                         if(typeArrays.length >= 2){
                             if(typeArrays[getRandomNumber(typeArrays.length)].toString().equals("0")){
@@ -167,6 +170,7 @@ public class G3MService extends Service {
 
                     }
                 }else{
+                   // Log.d("else pushState", pushState+"");
                     pushState = false;
                 }
             }
@@ -182,6 +186,8 @@ public class G3MService extends Service {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void onEnglishPushNotification(){
+
+        g3MSQLite.insterStatisics(dateFormat.format(new Date()), "english", "notify");
 
         Cursor cursor = g3MSQLite.getEnglish();
         Random random = new Random();
@@ -204,6 +210,12 @@ public class G3MService extends Service {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void onSciencePushNotification(int type){
+
+        if((type - 1) == 0){
+            g3MSQLite.insterStatisics(dateFormat.format(new Date()), "math", "notify");
+        }else{
+            g3MSQLite.insterStatisics(dateFormat.format(new Date()), "physics", "notify");
+        }
 
         Cursor cursor = g3MSQLite.getScience(type - 1);
         Random random = new Random();

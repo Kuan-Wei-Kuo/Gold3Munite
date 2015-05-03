@@ -2,6 +2,7 @@ package com.kuo.gold3munite;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -45,10 +46,8 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
     public Toolbar toolbar;
     public DrawerLayout drawerLayout;
     public ActionBarDrawerToggle actionBarDrawerToggle;
-    private ListView listView;
     private boolean setMenuEnable = false;
     private OnMenuItemClick onMenuItemClick;
-    private boolean setListDawerClick = true;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private List<ListItem> listItems = new ArrayList<ListItem>();
@@ -56,6 +55,8 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     private boolean setPopBack = false;
+    private Fragment content;
+    private MainFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,13 +127,23 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(g3MRecyclerAdapter);
 
-        fragmentManager.addOnBackStackChangedListener(fragmentStackChangeListener);
-
-        MainFragment mainFragment = new MainFragment();
+        mainFragment = new MainFragment();
         fragmentTransaction.replace(R.id.contentFrame, mainFragment, "mainFragment");
         fragmentTransaction.commit();
 
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        SharedPreferences settings = getSharedPreferences(SETTING_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        if (firstRun) {
+            editor.putBoolean(FIRST_RUN, false);
+        }
+        editor.commit();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -142,7 +153,7 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
             case android.R.id.home:
                 if(setPopBack){
                     if(fragmentManager.getBackStackEntryCount() > 0){
-                        fragmentManager.popBackStack();
+                        getSupportFragmentManager().popBackStack();
                     }
                 }else{
                     if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
@@ -207,13 +218,6 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
         }
     }
 
-    private FragmentManager.OnBackStackChangedListener fragmentStackChangeListener = new FragmentManager.OnBackStackChangedListener() {
-        @Override
-        public void onBackStackChanged() {
-            Toast.makeText(MainActivity.this, "狀態改變", Toast.LENGTH_SHORT).show();
-        }
-    };
-
     public interface OnMenuItemClick{
         void onMenuItemClick();
     }
@@ -225,6 +229,7 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
     public void setPopBack(boolean i){
         this.setPopBack = i;
     }
+
     public void setDrawerListChanged(int position){
         List<ListItem> listItems = g3MRecyclerAdapter.getListItems();
 
@@ -238,14 +243,16 @@ public class MainActivity extends ActionBarActivity implements G3MRecyclerAdapte
         g3MRecyclerAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        SharedPreferences settings = getSharedPreferences(SETTING_NAME, 0);
-        SharedPreferences.Editor editor = settings.edit();
-        if (firstRun) {
-            editor.putBoolean(FIRST_RUN, false);
+    public void switchContent(Fragment from, Fragment to, String tag) {
+        if (content != to) {
+            content = to;
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction().setCustomAnimations(
+                    android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+            if (!to.isAdded()) {
+                transaction.hide(from).add(R.id.contentFrame, to).commit();
+            } else {
+                transaction.hide(from).show(to).commit();
+            }
         }
-        editor.commit();
     }
 }
