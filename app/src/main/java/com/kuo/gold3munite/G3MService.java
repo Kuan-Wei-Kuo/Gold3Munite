@@ -1,11 +1,13 @@
 package com.kuo.gold3munite;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -23,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -49,6 +52,7 @@ public class G3MService extends Service {
     private Object[] typeArrays;
     private static boolean pushState = false;
     private G3MSQLite g3MSQLite;
+    private int AppearedAppID;  //紀錄鬧鐘是否出現過
 
     @Override
     public void onCreate() {
@@ -102,6 +106,11 @@ public class G3MService extends Service {
 
             calendar = Calendar.getInstance();
             weekArrays = settings.getStringSet(MainActivity.WEEK_REPEAT, null).toArray();
+            /*ActivityManager activityManager = (ActivityManager)  getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
+            List<ActivityManager.RunningTaskInfo> forGroundActivity = activityManager.getRunningTasks(1);
+            ComponentName componentInfo = forGroundActivity.get(0).topActivity;
+            String activityName = componentInfo.getClassName();
+            Log.d("class", activityName);*/
 
             for(int i = 0 ; i < weekArrays.length ; i++){
                 if((calendar.get(Calendar.DAY_OF_WEEK)-1+"").equals(weekArrays[i].toString())){

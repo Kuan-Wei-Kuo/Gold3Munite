@@ -155,10 +155,11 @@ public class MainActivity extends ActionBarActivity{
         SharedPreferences.Editor editor = settings.edit();
         firstRun = settings.getBoolean(FIRST_RUN, true);
 
+        Intent i = new Intent();
+        i.setClass(this, G3MService.class);
+        this.startService(i);
+
         if(firstRun){
-            Intent i = new Intent();
-            i.setClass(this, G3MService.class);
-            this.startService(i);
 
             String[] week = {"0", "1", "2", "3", "4", "5", "6"};
             String[] type = {"0", "1", "2"};
