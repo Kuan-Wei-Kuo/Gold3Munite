@@ -35,7 +35,7 @@ import lecho.lib.hellocharts.view.LineChartView;
 public class TestFragment extends Fragment implements MaterialLinearLayout.OnAnimationListener{
 
     private LineChartView lineChartView;
-    private MaterialLinearLayout englishLayout, mathLayout;
+    private MaterialLinearLayout englishLayout, mathLayout, physicsLayout;
     private G3MSQLite g3MSQLite;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy:MM:dd");
     private SimpleDateFormat simpleDayFormat = new SimpleDateFormat("MM.dd");
@@ -74,11 +74,15 @@ public class TestFragment extends Fragment implements MaterialLinearLayout.OnAni
         lineChartView = (LineChartView) view.findViewById(R.id.lineChartView);
         englishLayout = (MaterialLinearLayout) view.findViewById(R.id.englishLayout);
         mathLayout = (MaterialLinearLayout) view.findViewById(R.id.mathLayout);
+        physicsLayout = (MaterialLinearLayout) view.findViewById(R.id.physicsLayout);
+
         englishLayout.setOnClickListener(linearLayoutClickListener);
         mathLayout.setOnClickListener(linearLayoutClickListener);
+        physicsLayout.setOnClickListener(linearLayoutClickListener);
 
         englishLayout.setOnAnimationListener(this, 0);
         mathLayout.setOnAnimationListener(this, 1);
+        physicsLayout.setOnAnimationListener(this, 2);
     }
 
     private MaterialLinearLayout.OnClickListener linearLayoutClickListener = new View.OnClickListener() {
@@ -90,6 +94,9 @@ public class TestFragment extends Fragment implements MaterialLinearLayout.OnAni
                     break;
                 case R.id.mathLayout:
                     mathLayout.startAnimator();
+                    break;
+                case R.id.physicsLayout:
+                    physicsLayout.startAnimator();
                     break;
             }
         }
@@ -177,6 +184,7 @@ public class TestFragment extends Fragment implements MaterialLinearLayout.OnAni
         //Log.d("position", ""+position);
         englishLayout.setClickable(false);
         mathLayout.setClickable(false);
+        physicsLayout.setClickable(false);
     }
 
     @Override
@@ -193,14 +201,22 @@ public class TestFragment extends Fragment implements MaterialLinearLayout.OnAni
                 break;
             case 1:
                 g3MSQLite.insterStatisics(dateFormat.format(new Date()), "math", "test");
-                ScienceTestFragment scienceTestFragment = ScienceTestFragment.newIntance(ScienceTestFragment.MATH);
-                fragmentTransaction.replace(R.id.contentFrame, scienceTestFragment, "scienceTestFragment");
-                fragmentTransaction.addToBackStack("scienceTestFragment");
+                ScienceTestFragment mathTestFragment = ScienceTestFragment.newIntance(ScienceTestFragment.MATH);
+                fragmentTransaction.replace(R.id.contentFrame, mathTestFragment, "mathTestFragment");
+                fragmentTransaction.addToBackStack("mathTestFragment");
+                fragmentTransaction.commit();
+                break;
+            case 2:
+                g3MSQLite.insterStatisics(dateFormat.format(new Date()), "physics", "test");
+                ScienceTestFragment physicsTestFragment = ScienceTestFragment.newIntance(ScienceTestFragment.PHYSICS);
+                fragmentTransaction.replace(R.id.contentFrame, physicsTestFragment, "physicsTestFragment");
+                fragmentTransaction.addToBackStack("physicsTestFragment");
                 fragmentTransaction.commit();
                 break;
         }
         englishLayout.setClickable(true);
         mathLayout.setClickable(true);
+        physicsLayout.setClickable(true);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

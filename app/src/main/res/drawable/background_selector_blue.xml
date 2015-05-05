@@ -19,7 +19,7 @@
     <item>
         <shape>
             <solid
-                android:color="@color/blue_1" />
+                android:color="@color/BLUE_A400" />
             <stroke
                 android:width="2dp"
                 android:color="@android:color/transparent" />

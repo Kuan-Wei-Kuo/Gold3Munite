@@ -27,6 +27,8 @@ public class G3MSQLite extends SQLiteOpenHelper {
     public static final String MATH_QUESTION_URL = "math_question_";
     public static final String MATH_ANSWER_URL = "math_answer_";
     public static final String PHYSICS_FORMULA_URL = "physics_f";
+    public static final String PHYSICS_QUESTION_URL = "physics_q";
+    public static final String PHYSICS_ANSWER_URL = "physics_a";
 
     private static final int VERSION = 1;
     private static final String DB_NAME = "Gold3Munite.db";

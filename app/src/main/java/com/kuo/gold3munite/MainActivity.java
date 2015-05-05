@@ -193,27 +193,23 @@ public class MainActivity extends ActionBarActivity{
                     MainFragment mainFragment = new MainFragment();
                     fragmentTransaction.replace(R.id.contentFrame, mainFragment, "mainFragment");
                     fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    fragmentTransaction.addToBackStack("mainFragment");
                     fragmentTransaction.commit();
                     break;
                 case 1:
                     TestFragment testFragment = new TestFragment();
                     fragmentTransaction.replace(R.id.contentFrame, testFragment, "testFragment");
-                    fragmentTransaction.addToBackStack("mainFragment");
                     fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.commit();
                     break;
                 case 2:
                     StatisicsFragment statisicsFragment = new StatisicsFragment();
                     fragmentTransaction.replace(R.id.contentFrame, statisicsFragment, "statisicsFragment");
-                    fragmentTransaction.addToBackStack("mainFragment");
                     fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.commit();
                     break;
                 case 3:
                     SettingFragment settingFragment = new SettingFragment();
                     fragmentTransaction.replace(R.id.contentFrame, settingFragment, "settingsFragment");
-                    fragmentTransaction.addToBackStack("mainFragment");
                     fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     fragmentTransaction.commit();
                     break;

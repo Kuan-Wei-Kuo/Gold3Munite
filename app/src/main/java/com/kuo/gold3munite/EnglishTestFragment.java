@@ -34,17 +34,18 @@ import java.util.Random;
 public class EnglishTestFragment extends Fragment {
 
     private ImageView soundButton;
-    private TextView timerText, chineseText;
+    private TextView timerText, chineseText, questionCountText, greatText;
     private EditText englishEdit;
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private boolean isFinish = false;
 
     private int scoend = 0;
+    private int questionCount = 0;
+    private int score = 0;
     private int[] englishRowId;
     private G3MSQLite g3MSQLite;
     private Cursor cursor, cursorQuestion;
-    private Button clearButton, enterButton;
-    private int questionCount = 0;
+    private Button clearButton, enterButton, nextButton;
     private Handler medialPlayerHandler;
     private HandlerThread medialPlayerThread;
 
@@ -122,9 +123,12 @@ public class EnglishTestFragment extends Fragment {
         soundButton = (ImageView) view.findViewById(R.id.soundButton);
         timerText = (TextView) view.findViewById(R.id.timerText);
         chineseText = (TextView) view.findViewById(R.id.chineseText);
+        questionCountText = (TextView) view.findViewById(R.id.questionCountText);
+        greatText = (TextView) view.findViewById(R.id.greatText);
         englishEdit = (EditText) view.findViewById(R.id.englishEdit);
         clearButton = (Button) view.findViewById(R.id.clearButton);
         enterButton = (Button) view.findViewById(R.id.enterButton);
+        nextButton = (Button) view.findViewById(R.id.nextButton);
 
         cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
 
@@ -133,6 +137,7 @@ public class EnglishTestFragment extends Fragment {
 
         soundButton.setOnClickListener(soundButtonClickListener);
         enterButton.setOnClickListener(buttonClcikListener);
+        nextButton.setOnClickListener(buttonClcikListener);
         clearButton.setOnClickListener(buttonClcikListener);
 
     }
@@ -157,17 +162,34 @@ public class EnglishTestFragment extends Fragment {
                 case R.id.enterButton:
                     if(englishEdit.getText().toString().equals(cursorQuestion.getString(1))){
                         Toast.makeText(view.getContext(), "答案正確！", Toast.LENGTH_SHORT).show();
+                        isFinish = false;
+                        scoend = 0;
                         questionCount++;
+                        score++;
                         cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
                         englishEdit.setText("");
                         englishEdit.setHint(setStringPorkerRandom(cursorQuestion.getString(1)));
                         chineseText.setText(cursorQuestion.getString(3));
+                        questionCountText.setText("已作答：" + questionCount);
+                        greatText.setText("答對：" + score);
                         medialPlayerHandler.post(medialPlayerRunnable);
                     }else{
                         Toast.makeText(view.getContext(), "答案錯誤！", Toast.LENGTH_SHORT).show();
                         Vibrator vibrator =  (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
                         vibrator.vibrate(500);
                     }
+                    break;
+                case R.id.nextButton:
+                    isFinish = false;
+                    scoend = 0;
+                    questionCount++;
+                    cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
+                    englishEdit.setText("");
+                    englishEdit.setHint(setStringPorkerRandom(cursorQuestion.getString(1)));
+                    chineseText.setText(cursorQuestion.getString(3));
+                    questionCountText.setText("已作答：" + questionCount);
+                    greatText.setText("答對：" + score);
+                    medialPlayerHandler.post(medialPlayerRunnable);
                     break;
             }
 
@@ -232,6 +254,7 @@ public class EnglishTestFragment extends Fragment {
             if(msg.what == 1){
                 cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
 
+                questionCountText.setText("已作答：" + questionCount);
                 englishEdit.setText("");
                 englishEdit.setHint(setStringPorkerRandom(cursorQuestion.getString(1)));
                 timerText.setText("答題時間結束!");
@@ -272,14 +295,9 @@ public class EnglishTestFragment extends Fragment {
         @Override
         public void run() {
             Message message = handler.obtainMessage(2);
-            try {
-                mediaPlayer.setAudioStreamType (AudioManager.STREAM_MUSIC);
-                mediaPlayer.reset();
-                mediaPlayer.setDataSource(getActivity(), Uri.parse("https://translate.google.com.tw/translate_tts?ie=UTF-8&q="+ cursorQuestion.getString(1) +"&tl=en&total=1&idx=0&textlen=5&client=t&prev=input&sa=N"));
-                mediaPlayer.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            mediaPlayer.release();
+            mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse("https://translate.google.com.tw/translate_tts?ie=UTF-8&q="+ cursorQuestion.getString(1) +"&tl=en&total=1&idx=0&textlen=5&client=t&prev=input&sa=N"));
+            mediaPlayer.setAudioStreamType (AudioManager.STREAM_MUSIC);
             handler.sendMessage(message);
         }
     };
