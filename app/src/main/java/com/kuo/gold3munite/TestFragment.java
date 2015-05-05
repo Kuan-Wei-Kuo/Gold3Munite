@@ -27,7 +27,6 @@ import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
-import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.LineChartView;
 
 /**
@@ -57,15 +56,9 @@ public class TestFragment extends Fragment implements MaterialLinearLayout.OnAni
 
         View view = inflater.inflate(R.layout.fragment_test, container, false);
 
-        lineChartView = (LineChartView) view.findViewById(R.id.lineChartView);
-        englishLayout = (MaterialLinearLayout) view.findViewById(R.id.englishLayout);
-        mathLayout = (MaterialLinearLayout) view.findViewById(R.id.mathLayout);
-        englishLayout.setOnClickListener(linearLayoutClickListener);
-        mathLayout.setOnClickListener(linearLayoutClickListener);
-        setCharts();
+        initializeView(view);
 
-        englishLayout.setOnAnimationListener(this, 0);
-        mathLayout.setOnAnimationListener(this, 1);
+        setCharts();
 
         return view;
     }
@@ -75,6 +68,17 @@ public class TestFragment extends Fragment implements MaterialLinearLayout.OnAni
         super.onDestroy();
 
         g3MSQLite.CloseDB();
+    }
+
+    private void initializeView(View view){
+        lineChartView = (LineChartView) view.findViewById(R.id.lineChartView);
+        englishLayout = (MaterialLinearLayout) view.findViewById(R.id.englishLayout);
+        mathLayout = (MaterialLinearLayout) view.findViewById(R.id.mathLayout);
+        englishLayout.setOnClickListener(linearLayoutClickListener);
+        mathLayout.setOnClickListener(linearLayoutClickListener);
+
+        englishLayout.setOnAnimationListener(this, 0);
+        mathLayout.setOnAnimationListener(this, 1);
     }
 
     private MaterialLinearLayout.OnClickListener linearLayoutClickListener = new View.OnClickListener() {
@@ -207,13 +211,11 @@ public class TestFragment extends Fragment implements MaterialLinearLayout.OnAni
 
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setDrawerListChanged(1);
-        mainActivity.setPopBack(false);
-        mainActivity.setMenuEnable(false);
-        mainActivity.toolbar.setTitle("黃金三分鐘 - 測驗");
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.BLUE_A400));
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.actionBarDrawerToggle.syncState();
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mainActivity.setToolbarTitle("測驗");
+        mainActivity.setToolbarBackgroundColor(getResources().getColor(R.color.BLUE_A400));
+        mainActivity.setToolbarActionBar();
+        mainActivity.syncStateActionBarDrawerToggle();
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 }

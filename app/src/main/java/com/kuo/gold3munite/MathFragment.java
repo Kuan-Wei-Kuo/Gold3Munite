@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by User on 2015/4/3.
  */
-public class MathFragment extends Fragment implements G3MRecyclerAdapter.OnItemClickListener{
+public class MathFragment extends Fragment{
 
     private RecyclerView recyclerView;
     private G3MRecyclerAdapter g3MRecyclerAdapter;
@@ -33,6 +33,13 @@ public class MathFragment extends Fragment implements G3MRecyclerAdapter.OnItemC
 
         g3MSQLite = new G3MSQLite(view.getContext());
         g3MSQLite.OpenDB();
+
+        initializeView(view);
+
+        return view;
+    }
+
+    private void initializeView(View view){
 
         listItems.clear();
         Cursor cursor = g3MSQLite.getScience(G3MSQLite.MATH);
@@ -55,24 +62,22 @@ public class MathFragment extends Fragment implements G3MRecyclerAdapter.OnItemC
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         linearLayoutManager = new LinearLayoutManager(view.getContext());
-        g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_science, listItems, G3MRecyclerAdapter.SCIENCE, this);
+        g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_science, listItems, G3MRecyclerAdapter.SCIENCE, onItemClickListener);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(g3MRecyclerAdapter);
-
-        return view;
     }
 
-    @Override
-    public void onClick(long rowId, int posiwtion) {
+    private G3MRecyclerAdapter.OnItemClickListener onItemClickListener = new G3MRecyclerAdapter.OnItemClickListener() {
+        @Override
+        public void onClick(long rowId, int posiwtion) {
+            FragmentManager fragmentManager = getParentFragment().getFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        FragmentManager fragmentManager = getParentFragment().getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-        ContentScienceFragment contentScienceFragment = ContentScienceFragment.newIntance(rowId, ContentScienceFragment.MATH);
-        fragmentTransaction.replace(R.id.contentFrame, contentScienceFragment, "contentScienceFragment");
-        fragmentTransaction.addToBackStack("contentScienceFragment");
-        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        fragmentTransaction.commit();
-
-    }
+            ContentScienceFragment contentScienceFragment = ContentScienceFragment.newIntance(rowId, ContentScienceFragment.MATH);
+            fragmentTransaction.replace(R.id.contentFrame, contentScienceFragment, "contentScienceFragment");
+            fragmentTransaction.addToBackStack("contentScienceFragment");
+            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            fragmentTransaction.commit();
+        }
+    };
 }

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.transition.Explode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,15 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+
+        initializeView(view);
+
+        setToolbar();
+
+        return view;
+    }
+
+    private void initializeView(View view){
 
         int backStackCount = getFragmentManager().getBackStackEntryCount();
         for (int i = 0; i < backStackCount; i++) {
@@ -66,11 +76,8 @@ public class MainFragment extends Fragment {
                 }
             }
         });
+
         slidingTabLayout.setViewPager(viewPager);
-
-        setToolbar();
-
-        return view;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -80,15 +87,13 @@ public class MainFragment extends Fragment {
         window.setStatusBarColor(getResources().getColor(R.color.BLUE_A400));
 
         MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setPopBack(false);
-        mainActivity.setMenuEnable(false);
         mainActivity.setDrawerListChanged(0);
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.BLUE_A400));
-        mainActivity.toolbar.setTitle("黃金三分鐘");
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.actionBarDrawerToggle.syncState();
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mainActivity.setToolbarTitle("黃金三分鐘");
+        mainActivity.setToolbarBackgroundColor(getResources().getColor(R.color.BLUE_A400));
+        mainActivity.setToolbarActionBar();
+        mainActivity.syncStateActionBarDrawerToggle();
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
 
     }
 }

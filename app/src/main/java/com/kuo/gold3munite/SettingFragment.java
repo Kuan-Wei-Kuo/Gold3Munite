@@ -4,34 +4,17 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.sql.Array;
-import java.sql.Struct;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,7 +27,6 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
     private TextView typeText, weekText, areaTimeText, startTimeText, endTimeText;
     private CheckBox soundCheckBox, shockCheckBox;
     private SharedPreferences sharedPreferences;
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("kk:mm:ss");
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,13 +35,14 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
         sharedPreferences = getActivity().getSharedPreferences("Settings", 0);
 
         MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setMenuEnable(false);
-        mainActivity.toolbar.setTitle("黃金三分鐘 - 設定");
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.actionBarDrawerToggle.syncState();
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mainActivity.setDrawerListChanged(3);
+        mainActivity.setToolbarTitle("設定");
+        mainActivity.setToolbarBackgroundColor(getResources().getColor(R.color.BLUE_A400));
+        mainActivity.setToolbarActionBar();
+        mainActivity.syncStateActionBarDrawerToggle();
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+
     }
 
     @Override
@@ -71,6 +54,7 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
 
         return view;
     }
+
     private void initializeUI(View view){
 
         soundCheckBox = (CheckBox) view.findViewById(R.id.soundCheckBox);
@@ -121,12 +105,16 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
         areaTimeText.setText(chineseMin);
         typeText.setText(chineseType);
         weekText.setText(chineseWeek);
+        soundCheckBox.setChecked(sharedPreferences.getBoolean(MainActivity.SOUND, false));
+        shockCheckBox.setChecked(sharedPreferences.getBoolean(MainActivity.SHOCK, false));
 
         startTimeLayout.setOnAnimationListener(this, 0);
         endTimeLayout.setOnAnimationListener(this, 1);
         areaTimeLayout.setOnAnimationListener(this, 2);
         typeLayout.setOnAnimationListener(this, 3);
         weekLayout.setOnAnimationListener(this, 4);
+        shockLayout.setOnClickListener(relativeLayoutClickListener);
+        soundLayout.setOnClickListener(relativeLayoutClickListener);
 
         startTimeLayout.setOnClickListener(materialLinearClickListener);
         endTimeLayout.setOnClickListener(materialLinearClickListener);
@@ -134,6 +122,33 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
         areaTimeLayout.setOnClickListener(materialLinearClickListener);
         weekLayout.setOnClickListener(materialLinearClickListener);
     }
+
+    private RelativeLayout.OnClickListener relativeLayoutClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            SharedPreferences settings = getActivity().getSharedPreferences(MainActivity.SETTING_NAME, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            switch (view.getId()){
+                case R.id.soundLayout:
+                    if(soundCheckBox.isChecked()){
+                        soundCheckBox.setChecked(false);
+                    }else{
+                        soundCheckBox.setChecked(true);
+                    }
+                    editor.putBoolean(MainActivity.SOUND, soundCheckBox.isChecked());
+                    break;
+                case R.id.shockLayout:
+                    if(shockCheckBox.isChecked()){
+                        shockCheckBox.setChecked(false);
+                    }else{
+                        shockCheckBox.setChecked(true);
+                    }
+                    editor.putBoolean(MainActivity.SHOCK, shockCheckBox.isChecked());
+                    break;
+            }
+            editor.commit();
+        }
+    };
 
     private MaterialLinearLayout.OnClickListener materialLinearClickListener = new View.OnClickListener() {
         @Override

@@ -220,19 +220,17 @@ public class ScienceTestFragment extends Fragment {
 
         if(getArguments().getInt("TYPE") == MATH){
             cursor = g3MSQLite.getScience(G3MSQLite.MATH);
-            mainActivity.toolbar.setTitle("數學測驗");
+            mainActivity.setToolbarTitle("數學測驗");
             window.setStatusBarColor(getResources().getColor(R.color.BLUE_A400));
-            mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.BLUE_A400));
+            mainActivity.setToolbarBackgroundColor(getResources().getColor(R.color.BLUE_A400));
         }else if(getArguments().getInt("TYPE") == PHYSICS){
             cursor = g3MSQLite.getScience(G3MSQLite.PHYSICS);
-            mainActivity.toolbar.setTitle("物理測驗");
+            mainActivity.setToolbarTitle("物理測驗");
             window.setStatusBarColor(getResources().getColor(R.color.GREEN_500));
-            mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.GREEN_500));
+            mainActivity.setToolbarBackgroundColor(getResources().getColor(R.color.GREEN_500));
         }
-        mainActivity.setPopBack(true);
-        mainActivity.setMenuEnable(false);
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
+        mainActivity.setToolbarActionBar();
         mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 }

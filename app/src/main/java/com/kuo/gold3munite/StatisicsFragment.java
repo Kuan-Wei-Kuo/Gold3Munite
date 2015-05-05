@@ -36,9 +36,7 @@ import java.util.Random;
  */
 public class StatisicsFragment extends Fragment {
 
-    private Calendar calendar = Calendar.getInstance();
     private G3MSQLite g3MSQLite;
-    private Cursor cursor;
     private SlidingTabLayout slidingTabLayout;
     private ViewPager viewPager;
     private List<Fragment> fragmentList = new ArrayList<Fragment>();
@@ -55,6 +53,13 @@ public class StatisicsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statisics, container, false);
+
+        initializeView(view);
+
+        return view;
+    }
+
+    private void initializeView(View view){
 
         fragmentList.clear();
         titleList.clear();
@@ -74,30 +79,11 @@ public class StatisicsFragment extends Fragment {
 
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.setDrawerListChanged(2);
-        mainActivity.setMenuEnable(false);
-        mainActivity.toolbar.setTitle("黃金三分鐘 - 學習記錄");
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.blue_1));
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.actionBarDrawerToggle.syncState();
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-
-        return view;
+        mainActivity.setToolbarTitle("學習記錄");
+        mainActivity.setToolbarBackgroundColor(getResources().getColor(R.color.BLUE_A400));
+        mainActivity.setToolbarActionBar();
+        mainActivity.syncStateActionBarDrawerToggle();
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
-
-    private String onDatWeekChinese(Calendar calendar){
-
-        String[] chineseDay = {"一","二","三","四","五","六","日"};
-
-        return chineseDay[calendar.get(Calendar.DAY_OF_WEEK)-1];
-    }
-
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("NEXT_BUTTON")){
-                Toast.makeText(context, "歐耶，成功", Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
 }

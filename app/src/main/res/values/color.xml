@@ -27,6 +27,7 @@
     <color name="GRAY_500">#9E9E9E</color>
 
     <color name="PINKY_500">#E91E63</color>
+    <color name="PINKY_300">#F06292</color>
 
     <color name="GREEN_500">#4CAF50</color>
 </resources>

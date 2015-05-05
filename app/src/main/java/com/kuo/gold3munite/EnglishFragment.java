@@ -1,5 +1,8 @@
 package com.kuo.gold3munite;
 
+import android.annotation.TargetApi;
+import android.media.Image;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
@@ -10,10 +13,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +34,6 @@ public class EnglishFragment extends Fragment{
     private LinearLayoutManager linearLayoutManager;
     private G3MSQLite g3MSQLite;
     private List<ListItem> listItems = new ArrayList<ListItem>();
-    private MainActivity mainActivity;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,15 +48,19 @@ public class EnglishFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_recycler, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        linearLayoutManager = new LinearLayoutManager(view.getContext());
 
-        listItems.clear();
+        linearLayoutManager = new LinearLayoutManager(view.getContext());
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 
         Thread uiThread = new Thread(uiRunnable);
         uiThread.start();
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -75,8 +84,7 @@ public class EnglishFragment extends Fragment{
 
             ContentEnglishFragment contentEnglishFragment = ContentEnglishFragment.newIntance(rowId, position);
             fragmentTransaction.replace(R.id.contentFrame, contentEnglishFragment, "contentEnglishFragment");
-            fragmentTransaction.addToBackStack("englishFragmeny");
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            fragmentTransaction.addToBackStack("contentEnglishFragment");
             fragmentTransaction.commit();
         }
     };
@@ -97,8 +105,10 @@ public class EnglishFragment extends Fragment{
     private Runnable uiRunnable = new Runnable() {
         @Override
         public void run() {
+
             Message message = handler.obtainMessage(1);
             Cursor cursor = g3MSQLite.getEnglish();
+            listItems.clear();
 
             if(cursor.getCount() != 0){
                 cursor.moveToFirst();

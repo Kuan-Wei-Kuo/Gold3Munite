@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Message;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -36,7 +37,7 @@ public class EnglishTestFragment extends Fragment {
     private TextView timerText, chineseText;
     private EditText englishEdit;
     private MediaPlayer mediaPlayer = new MediaPlayer();
-    private Handler handler = new Handler();
+    private boolean isFinish = false;
 
     private int scoend = 0;
     private int[] englishRowId;
@@ -65,24 +66,6 @@ public class EnglishTestFragment extends Fragment {
         }
 
         englishRowId = setPorkerRandom(englishRowId);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-
-        View view = inflater.inflate(R.layout.fragment_english_test, container, false);
-
-        soundButton = (ImageView) view.findViewById(R.id.soundButton);
-        timerText = (TextView) view.findViewById(R.id.timerText);
-        chineseText = (TextView) view.findViewById(R.id.chineseText);
-        englishEdit = (EditText) view.findViewById(R.id.englishEdit);
-        clearButton = (Button) view.findViewById(R.id.clearButton);
-        enterButton = (Button) view.findViewById(R.id.enterButton);
-
-        mediaPlayer.setAudioStreamType (AudioManager.STREAM_MUSIC);
-
         cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
 
         medialPlayerThread = new HandlerThread("medialPlayerThread");
@@ -90,18 +73,15 @@ public class EnglishTestFragment extends Fragment {
 
         medialPlayerHandler = new Handler(medialPlayerThread.getLooper());
         medialPlayerHandler.post(medialPlayerRunnable);
+    }
 
-        soundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mediaPlayer.start();
-            }
-        });
-        englishEdit.setHint(setStringPorkerRandom(cursorQuestion.getString(1)));
-        chineseText.setText(cursorQuestion.getString(3));
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        enterButton.setOnClickListener(buttonClcikListener);
-        clearButton.setOnClickListener(buttonClcikListener);
+        View view = inflater.inflate(R.layout.fragment_english_test, container, false);
+
+        initializeView(view);
 
         return view;
     }
@@ -118,9 +98,11 @@ public class EnglishTestFragment extends Fragment {
         if(medialPlayerThread != null){
             medialPlayerThread.quit();
         }
+        if(mediaPlayer != null){
+            mediaPlayer.release();
+        }
 
         g3MSQLite.CloseDB();
-        mediaPlayer.release();
     }
 
     @Override
@@ -135,45 +117,31 @@ public class EnglishTestFragment extends Fragment {
         handler.postDelayed(runTimerStop, 1000);
     }
 
-    private Runnable runTimerStop = new Runnable()
-    {
+    private void initializeView(View view){
+
+        soundButton = (ImageView) view.findViewById(R.id.soundButton);
+        timerText = (TextView) view.findViewById(R.id.timerText);
+        chineseText = (TextView) view.findViewById(R.id.chineseText);
+        englishEdit = (EditText) view.findViewById(R.id.englishEdit);
+        clearButton = (Button) view.findViewById(R.id.clearButton);
+        enterButton = (Button) view.findViewById(R.id.enterButton);
+
+        cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
+
+        englishEdit.setHint(setStringPorkerRandom(cursorQuestion.getString(1)));
+        chineseText.setText(cursorQuestion.getString(3));
+
+        soundButton.setOnClickListener(soundButtonClickListener);
+        enterButton.setOnClickListener(buttonClcikListener);
+        clearButton.setOnClickListener(buttonClcikListener);
+
+    }
+
+    private ImageView.OnClickListener soundButtonClickListener = new View.OnClickListener() {
         @Override
-        public void run()
-        {
-            if(scoend <= 20){
-                timerText.setText("請於" + (20 - scoend) + "秒內回答題目");
-                scoend++;
-                handler.postDelayed(runTimerStop, 1000);
-            }else{
-
-                questionCount++;
-                scoend = 0;
-                cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
-
-                handler.postDelayed(runTimerStop, 1000);
-                medialPlayerHandler.post(medialPlayerRunnable);
-
-                Vibrator vibrator =  (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
-                vibrator.vibrate(500);
-
-                timerText.setText("答題時間結束!");
-
-                englishEdit.setHint(setStringPorkerRandom(cursorQuestion.getString(1)));
-                chineseText.setText(cursorQuestion.getString(3));
-            }
-        }
-    };
-
-
-    private Runnable medialPlayerRunnable = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                mediaPlayer.reset();
-                mediaPlayer.setDataSource(getActivity(), Uri.parse("https://translate.google.com.tw/translate_tts?ie=UTF-8&q="+ cursorQuestion.getString(1) +"&tl=en&total=1&idx=0&textlen=5&client=t&prev=input&sa=N"));
-                mediaPlayer.prepare();
-            } catch (IOException e) {
-                e.printStackTrace();
+        public void onClick(View view) {
+            if(isFinish){
+                mediaPlayer.start();
             }
         }
     };
@@ -181,6 +149,7 @@ public class EnglishTestFragment extends Fragment {
     private Button.OnClickListener buttonClcikListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
+
             switch (view.getId()){
                 case R.id.clearButton:
                     englishEdit.setText("");
@@ -201,10 +170,12 @@ public class EnglishTestFragment extends Fragment {
                     }
                     break;
             }
+
         }
     };
 
     private int[] setPorkerRandom(int[] result){
+
         Random random = new Random();
         for(int i = 0; i < result.length ; i++){
             int index = random.nextInt(result.length);
@@ -213,11 +184,12 @@ public class EnglishTestFragment extends Fragment {
             result[i] = temp;
         }
         return result;
+
     }
 
     private String setStringPorkerRandom(String stringResult){
+
         int[] result = new int[stringResult.length()];
-        int stringLenght = stringResult.length()/2;
         char[] porkerChar = new char[stringResult.length()];
         String porkerString = "";
 
@@ -245,12 +217,71 @@ public class EnglishTestFragment extends Fragment {
         MainActivity mainActivity = (MainActivity) getActivity();
 
         window.setStatusBarColor(getResources().getColor(R.color.PINKY_500));
-        mainActivity.setPopBack(true);
-        mainActivity.setMenuEnable(false);
-        mainActivity.toolbar.setTitle("英文測驗");
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.PINKY_500));
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mainActivity.setToolbarTitle("英文測驗");
+        mainActivity.setToolbarBackgroundColor(getResources().getColor(R.color.PINKY_500));
+        mainActivity.setToolbarActionBar();
+        mainActivity.setActionBarDisplayHomeAsUpEnabled(true);
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            if(msg.what == 1){
+                cursorQuestion = g3MSQLite.getEnglish(englishRowId[questionCount]);
+
+                englishEdit.setText("");
+                englishEdit.setHint(setStringPorkerRandom(cursorQuestion.getString(1)));
+                timerText.setText("答題時間結束!");
+                chineseText.setText(cursorQuestion.getString(3));
+            }else{
+                isFinish = true;
+            }
+        }
+    };
+
+    private Runnable runTimerStop = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            if(scoend <= 20){
+                timerText.setText("請於" + (20 - scoend) + "秒內回答題目");
+                scoend++;
+                handler.postDelayed(runTimerStop, 1000);
+            }else{
+                Message message = handler.obtainMessage(1);
+                questionCount++;
+                scoend = 0;
+                isFinish = false;
+                Vibrator vibrator =  (Vibrator) getActivity().getSystemService(Service.VIBRATOR_SERVICE);
+                vibrator.vibrate(500);
+
+                handler.postDelayed(runTimerStop, 1000);
+                medialPlayerHandler.post(medialPlayerRunnable);
+
+                handler.sendMessage(message);
+            }
+        }
+    };
+
+
+    private Runnable medialPlayerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Message message = handler.obtainMessage(2);
+            try {
+                mediaPlayer.setAudioStreamType (AudioManager.STREAM_MUSIC);
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(getActivity(), Uri.parse("https://translate.google.com.tw/translate_tts?ie=UTF-8&q="+ cursorQuestion.getString(1) +"&tl=en&total=1&idx=0&textlen=5&client=t&prev=input&sa=N"));
+                mediaPlayer.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            handler.sendMessage(message);
+        }
+    };
+
 }

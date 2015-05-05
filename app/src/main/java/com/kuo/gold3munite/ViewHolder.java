@@ -19,7 +19,6 @@ public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickL
     public CheckBox checkBox;
     public RadioButton radioButton;
     public ImageView icon;
-    public MaterialListButton materialListButton;
 
     public ViewHolder(View itemView) {
         super(itemView);

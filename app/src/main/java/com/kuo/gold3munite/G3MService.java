@@ -84,31 +84,10 @@ public class G3MService extends Service {
                 .setContentText("下拉學習更多...")
                 .setColor(getResources().getColor(R.color.BLUE_A400))
                 .setSmallIcon(R.mipmap.ic_launcher).build();
-        notification.defaults = Notification.DEFAULT_SOUND;
-
         notificationManager=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-        //onEnglishPushNotification();
-
-
-        /*try {
-            stratTime = simpleDateFormat.parse(settings.getString(MainActivity.START_TIME, "")).getTime();
-            currentTime = simpleDateFormat.parse(simpleDateFormat.format(new Date())).getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Long tempTime = currentTime - stratTime;
-        Long minute = tempTime % (1000*60*60) / (1000*60);
-        Long hour = tempTime / (1000*60*60);
-        Log.d("stratDate", settings.getString(MainActivity.START_TIME, ""));
-        Log.d("currentDate", simpleDateFormat.format(new Date()));
-        Log.d("stratTime", ""+(stratTime/(1000*60*60)));
-        Log.d("currentTime", ""+(currentTime/(1000*60*60)));
-        Log.d("小時", ""+ hour);
-        Log.d("分鐘", ""+ minute);*/
-        //Log.d("禮拜", calendar.get(Calendar.DAY_OF_WEEK)-1+"");
-        //Log.d("推播時間", settings.getInt(MainActivity.AREA_TIME, 0)+"");
 
         handler.postDelayed(showTime, 1000);
+
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -150,7 +129,13 @@ public class G3MService extends Service {
 
                 if((((hour*3600)+(minute*60))%settings.getInt(MainActivity.AREA_TIME, 0)) == 0){
                     if(!pushState){
-                        Log.d("if pushState", pushState+"");
+                        if(settings.getBoolean(MainActivity.SHOCK, false) && settings.getBoolean(MainActivity.SOUND, false)){
+                            notification.defaults = Notification.DEFAULT_ALL;
+                        }else if(settings.getBoolean(MainActivity.SHOCK, false)){
+                            notification.defaults = Notification.DEFAULT_VIBRATE;
+                        }else{
+                            notification.defaults = Notification.DEFAULT_SOUND;
+                        }
                         pushState = true;
                         if(typeArrays.length >= 2){
                             if(typeArrays[getRandomNumber(typeArrays.length)].toString().equals("0")){
@@ -170,7 +155,6 @@ public class G3MService extends Service {
 
                     }
                 }else{
-                   // Log.d("else pushState", pushState+"");
                     pushState = false;
                 }
             }

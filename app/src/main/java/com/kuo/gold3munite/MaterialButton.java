@@ -100,7 +100,7 @@ public class MaterialButton extends Button {
         AnimatorSet set = new AnimatorSet();
         set.playTogether(
                 ObjectAnimator.ofFloat(this, radiusProperty, startRadius, endRadius),
-                ObjectAnimator.ofObject(this, backgroundColorProperty, new ArgbEvaluator(), getResources().getColor(R.color.black_2), Color.TRANSPARENT)
+                ObjectAnimator.ofObject(this, backgroundColorProperty, new ArgbEvaluator(), getResources().getColor(R.color.GRAY_500), Color.TRANSPARENT)
         );
         set.setDuration((long) (1200 / end * endRadius));
         set.setInterpolator(new DecelerateInterpolator());

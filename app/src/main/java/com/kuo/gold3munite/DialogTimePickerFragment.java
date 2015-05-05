@@ -54,6 +54,13 @@ public class DialogTimePickerFragment extends DialogFragment {
 
         View view = inflater.inflate(R.layout.fragment_timepicker, container, false);
 
+        initializeView(view);
+
+        return view;
+    }
+
+    private void initializeView(View view){
+
         timePicker = (TimePicker) view.findViewById(R.id.timePicker);
         cancel = (TextView) view.findViewById(R.id.cancel);
         enter = (TextView) view.findViewById(R.id.enter);
@@ -71,7 +78,6 @@ public class DialogTimePickerFragment extends DialogFragment {
         cancel.setOnClickListener(buttonClick);
         enter.setOnClickListener(buttonClick);
 
-        return view;
     }
 
     private TimePicker.OnTimeChangedListener timePickerChangeListener = new TimePicker.OnTimeChangedListener() {

@@ -12,9 +12,11 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +43,8 @@ public class ContentEnglishFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private List<ListItem> listItems = new ArrayList<ListItem>();
     private String sound;
-
     private View view;
+    private boolean isRunnbale = false;
 
     static ContentEnglishFragment newIntance(long rowId, int position){
 
@@ -65,7 +67,6 @@ public class ContentEnglishFragment extends Fragment {
         cursor = g3MSQLite.getEnglish(getArguments().getLong("rowId"));
         sound = "https://translate.google.com.tw/translate_tts?ie=UTF-8&q="+ cursor.getString(1) +"&tl=en&total=1&idx=0&textlen=5&client=t&prev=input&sa=N";
 
-
         Thread mediaPlayerThread = new Thread(mediaPlayerRunnable);
         mediaPlayerThread.start();
 
@@ -80,22 +81,7 @@ public class ContentEnglishFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_content_english, container, false);
 
-        englishText = (TextView) view.findViewById(R.id.englishText);
-        kkText = (TextView) view.findViewById(R.id.kkText);
-        chineseText = (TextView) view.findViewById(R.id.chineseText);
-        buttonSound = (Button) view.findViewById(R.id.buttonSound);
-
-        cursor = g3MSQLite.getEnglish(getArguments().getLong("rowId"));
-
-        englishText.setText(cursor.getString(1));
-        kkText.setText(cursor.getString(2));
-        chineseText.setText(cursor.getString(3));
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(view.getContext());
-
-        recyclerView.setLayoutManager(linearLayoutManager);
+        initializeView(view);
 
         return view;
     }
@@ -109,10 +95,42 @@ public class ContentEnglishFragment extends Fragment {
             handler.removeCallbacks(uiRunnable);
         }
 
+        if(mediaPlayer != null){
+            mediaPlayer.release();
+        }
         g3MSQLite.CloseDB();
-        mediaPlayer.release();
     }
 
+    private void  initializeView(View view){
+
+        cursor = g3MSQLite.getEnglish(getArguments().getLong("rowId"));
+        englishText = (TextView) view.findViewById(R.id.englishText);
+        kkText = (TextView) view.findViewById(R.id.kkText);
+        chineseText = (TextView) view.findViewById(R.id.chineseText);
+        buttonSound = (Button) view.findViewById(R.id.buttonSound);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        linearLayoutManager = new LinearLayoutManager(view.getContext());
+
+        englishText.setText(cursor.getString(1));
+        chineseText.setText(cursor.getString(3));
+        kkText.setText(cursor.getString(2));
+
+
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setToolbar(){
+
+        Window window = getActivity().getWindow();
+        window.setStatusBarColor(getResources().getColor(R.color.PINKY_500));
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        mainActivity.setToolbarTitle("英文");
+        mainActivity.setToolbarBackgroundColor(getResources().getColor(R.color.PINKY_500));
+        mainActivity.setToolbarActionBar();
+        mainActivity.setActionBarDisplayHomeAsUpEnabled(true);
+        mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
 
     private Handler handler = new Handler(){
         @Override
@@ -128,6 +146,8 @@ public class ContentEnglishFragment extends Fragment {
                 });
             }else if(msg.what == 2){
                 g3MRecyclerAdapter = new G3MRecyclerAdapter(R.layout.list_item_content_english, listItems, G3MRecyclerAdapter.ENGLISH_CONTNET, null);
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setLayoutManager(linearLayoutManager);
                 recyclerView.setAdapter(g3MRecyclerAdapter);
             }
         }
@@ -136,7 +156,7 @@ public class ContentEnglishFragment extends Fragment {
     private Runnable mediaPlayerRunnable = new Runnable() {
         @Override
         public void run() {
-            Message message = handler.obtainMessage(1, "ok");
+            Message message = handler.obtainMessage(1);
             mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(sound));
             mediaPlayer.setAudioStreamType (AudioManager.STREAM_MUSIC);
             handler.sendMessage(message);
@@ -146,7 +166,8 @@ public class ContentEnglishFragment extends Fragment {
     private Runnable uiRunnable = new Runnable() {
         @Override
         public void run() {
-            Message message = handler.obtainMessage(2, "ok");
+
+            Message message = handler.obtainMessage(2);
 
             String[] exampleEnglish = {cursor.getString(5), cursor.getString(7)};
             String[] exampleChinese = {cursor.getString(4), cursor.getString(6)};
@@ -161,20 +182,4 @@ public class ContentEnglishFragment extends Fragment {
             handler.sendMessage(message);
         }
     };
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setToolbar(){
-
-        Window window = getActivity().getWindow();
-        window.setStatusBarColor(getResources().getColor(R.color.PINKY_500));
-
-        MainActivity mainActivity = (MainActivity) getActivity();
-        mainActivity.setPopBack(true);
-        mainActivity.setMenuEnable(false);
-        mainActivity.toolbar.setTitle("英文");
-        mainActivity.toolbar.setBackgroundColor(getResources().getColor(R.color.PINKY_500));
-        mainActivity.setSupportActionBar(mainActivity.toolbar);
-        mainActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-    }
 }

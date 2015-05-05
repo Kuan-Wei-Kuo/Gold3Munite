@@ -32,6 +32,14 @@ public class DialogRecyclerFragment extends DialogFragment{
     private OnRadioButtonData onRadioButtonData;
     private boolean[] count;
 
+    public interface OnCheckBoxData{
+        void getCheckData(boolean[] count, int position);
+    }
+
+    public interface OnRadioButtonData{
+        void getRadioData(String typeText, int position);
+    }
+
     static DialogRecyclerFragment newIntance(int layoutId, int TYPE, String[] contentArrays, String title, int position){
 
         DialogRecyclerFragment dialogRecyclerFragment = new DialogRecyclerFragment();
@@ -53,6 +61,13 @@ public class DialogRecyclerFragment extends DialogFragment{
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         View view = inflater.inflate(R.layout.dialog_recycler, container, false);
+
+        initializeView(view);
+
+        return view;
+    }
+
+    private void initializeView(View view){
 
         title = (TextView) view.findViewById(R.id.title);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
@@ -94,7 +109,6 @@ public class DialogRecyclerFragment extends DialogFragment{
         cancel.setOnClickListener(buttonClick);
         enter.setOnClickListener(buttonClick);
 
-        return view;
     }
 
     private TextView.OnClickListener buttonClick = new View.OnClickListener() {
@@ -119,6 +133,7 @@ public class DialogRecyclerFragment extends DialogFragment{
     };
 
     private boolean[] getCount(){
+
         List<ListItem> listItems = new ArrayList<ListItem>();
         listItems = g3MRecyclerAdapter.getListItems();
         for(int i = 0 ; i < listItems.size() ; i++){
@@ -127,9 +142,11 @@ public class DialogRecyclerFragment extends DialogFragment{
             }
         }
         return this.count;
+
     }
 
     private String getTypeText(){
+
         List<ListItem> listItems = new ArrayList<ListItem>();
         listItems = g3MRecyclerAdapter.getListItems();
         String typeText = "";
@@ -139,13 +156,7 @@ public class DialogRecyclerFragment extends DialogFragment{
             }
         }
         return typeText;
+
     }
 
-    public interface OnCheckBoxData{
-        void getCheckData(boolean[] count, int position);
-    }
-
-    public interface OnRadioButtonData{
-        void getRadioData(String typeText, int position);
-    }
 }
