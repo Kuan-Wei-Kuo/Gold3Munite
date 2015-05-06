@@ -50,10 +50,6 @@ public class ContentScienceFragment extends Fragment {
 
         g3MSQLite = new G3MSQLite(getActivity());
         g3MSQLite.OpenDB();
-
-        Thread thread = new Thread(uiRunnable);
-        thread.start();
-
         setToolbar();
     }
 
@@ -71,10 +67,6 @@ public class ContentScienceFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        if(handler != null){
-            handler.removeCallbacks(uiRunnable);
-        }
-
         g3MSQLite.CloseDB();
     }
 
@@ -83,11 +75,17 @@ public class ContentScienceFragment extends Fragment {
         scienceText = (TextView) view.findViewById(R.id.scienceText);
         webView = (WebView) view.findViewById(R.id.webView);
 
-        if(isFinish){
-            webView.setWebViewClient(webViewClient);
-            webView.getSettings().setJavaScriptEnabled(true);
-            webView.getSettings().setSupportZoom(true);
-            webView.getSettings().setBuiltInZoomControls(true);
+        webView.setWebViewClient(webViewClient);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+
+        if(getArguments().getInt("TYPE") == MATH){
+            cursor = g3MSQLite.getScience(getArguments().getLong("rowId"), G3MSQLite.MATH);
+            webView.loadUrl("file:///android_asset/MathFormula/"+ G3MSQLite.MATH_FORMULA_URL+cursor.getLong(0) +".html");
+        }else if(getArguments().getInt("TYPE") == PHYSICS){
+            cursor = g3MSQLite.getScience(getArguments().getLong("rowId"), G3MSQLite.PHYSICS);
+            webView.loadUrl("file:///android_asset/PhysicsFormula/"+ G3MSQLite.PHYSICS_FORMULA_URL+cursor.getLong(0) +".JPG");
         }
 
         scienceText.setText(cursor.getString(1));
@@ -120,31 +118,5 @@ public class ContentScienceFragment extends Fragment {
         mainActivity.setActionBarDisplayHomeAsUpEnabled(true);
         mainActivity.setDrawerLayoutLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
-
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            if(msg.what == 1){
-                isFinish = true;
-            }
-        }
-    };
-
-    private Runnable uiRunnable = new Runnable() {
-        @Override
-        public void run() {
-
-            Message message = handler.obtainMessage(1);
-            if(getArguments().getInt("TYPE") == MATH){
-                cursor = g3MSQLite.getScience(getArguments().getLong("rowId"), G3MSQLite.MATH);
-                webView.loadUrl("file:///android_asset/MathFormula/"+ G3MSQLite.MATH_FORMULA_URL+cursor.getLong(0) +".html");
-            }else if(getArguments().getInt("TYPE") == PHYSICS){
-                cursor = g3MSQLite.getScience(getArguments().getLong("rowId"), G3MSQLite.PHYSICS);
-                webView.loadUrl("file:///android_asset/PhysicsFormula/"+ G3MSQLite.PHYSICS_FORMULA_URL+cursor.getLong(0) +".JPG");
-            }
-            handler.sendMessage(message);
-        }
-    };
 
 }
