@@ -1,22 +1,22 @@
 package com.kuo.gold3munite;
 
 import android.annotation.TargetApi;
-import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -25,7 +25,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -52,7 +51,10 @@ public class G3MService extends Service {
     private Object[] typeArrays;
     private static boolean pushState = false;
     private G3MSQLite g3MSQLite;
-    private int AppearedAppID;  //紀錄鬧鐘是否出現過
+    private int next;
+    private MediaPlayer mediaPlayer;
+    private int rowId;
+    private boolean isReady = false;
 
     @Override
     public void onCreate() {
@@ -66,7 +68,8 @@ public class G3MService extends Service {
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("NEXT_BUTTON");
-        getApplicationContext().registerReceiver(receiver, intentFilter);
+        intentFilter.addAction("SOUND_BUTTON");
+        getBaseContext().registerReceiver(receiver, intentFilter);
     }
 
     @Override
@@ -83,14 +86,27 @@ public class G3MService extends Service {
         intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
+        Intent nextButtonIntent = new Intent("NEXT_BUTTON");
+        PendingIntent nextButtonPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, nextButtonIntent, 0);
+        contentViewsEnglish.setOnClickPendingIntent(R.id.nextButton, nextButtonPendingIntent);
+
+        Intent soundButtonIntent = new Intent("SOUND_BUTTON");
+        PendingIntent soundButtonPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, soundButtonIntent, 0);
+        contentViewsEnglish.setOnClickPendingIntent(R.id.soundButton, soundButtonPendingIntent);
+
         notification = new Notification.Builder(getApplicationContext())
                 .setContentTitle("黃金分鐘")
                 .setContentText("下拉學習更多...")
                 .setColor(getResources().getColor(R.color.BLUE_A400))
-                .setSmallIcon(R.mipmap.ic_launcher).build();
+                .setSmallIcon(R.mipmap.g3m_white_icon).build();
+
+        notification.contentIntent = pendingIntent;
+
         notificationManager=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 
         handler.postDelayed(showTime, 1000);
+
+        onEnglishPushNotification();
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -117,7 +133,6 @@ public class G3MService extends Service {
                     pushNotification();
                 }
             }
-
             handler.postDelayed(this, 1000);
         }
     };
@@ -180,22 +195,29 @@ public class G3MService extends Service {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void onEnglishPushNotification(){
 
+        next = 0;
+
+        if(isReady){
+            isReady = false;
+            mediaPlayer.release();
+        }
+
         g3MSQLite.insterStatisics(dateFormat.format(new Date()), "english", "notify");
 
         Cursor cursor = g3MSQLite.getEnglish();
         Random random = new Random();
-        Cursor cursorQuestion = g3MSQLite.getEnglish(random.nextInt(cursor.getCount())+1);
+        rowId = random.nextInt(cursor.getCount())+1;
+        Cursor cursorQuestion = g3MSQLite.getEnglish(rowId);
 
-        contentViewsEnglish.setImageViewResource(R.id.icon, R.mipmap.ic_launcher);
+        contentViewsEnglish.setImageViewResource(R.id.icon, R.mipmap.g3m_icon);
         contentViewsEnglish.setTextViewText(R.id.title, "黃金三分鐘");
         contentViewsEnglish.setTextViewText(R.id.englishText, cursorQuestion.getString(1));
         contentViewsEnglish.setTextViewText(R.id.chineseText, cursorQuestion.getString(3));
         contentViewsEnglish.setTextViewText(R.id.exampleEnglishText, cursorQuestion.getString(5));
         contentViewsEnglish.setTextViewText(R.id.exampleChineseText, cursorQuestion.getString(4));
 
-        Intent nextButtonIntent = new Intent("NEXT_BUTTON");
-        PendingIntent nextButtonPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, nextButtonIntent, 0);
-        contentViewsEnglish.setOnClickPendingIntent(R.id.nextButton, nextButtonPendingIntent);
+        Thread thread = new Thread(mediaPlayerRunnable);
+        thread.start();
 
         notification.bigContentView = contentViewsEnglish;
         notificationManager.notify(0, notification);
@@ -206,13 +228,16 @@ public class G3MService extends Service {
 
         if((type - 1) == 0){
             g3MSQLite.insterStatisics(dateFormat.format(new Date()), "math", "notify");
+            next = 1;
         }else{
             g3MSQLite.insterStatisics(dateFormat.format(new Date()), "physics", "notify");
+            next = 2;
         }
 
         Cursor cursor = g3MSQLite.getScience(type - 1);
         Random random = new Random();
-        Cursor cursorQuestion = g3MSQLite.getScience(random.nextInt(cursor.getCount()) + 1, type - 1);
+        rowId = random.nextInt(cursor.getCount())+1;
+        Cursor cursorQuestion = g3MSQLite.getScience(rowId, type - 1);
 
         contentViewsScience.setImageViewResource(R.id.icon, R.mipmap.ic_launcher);
         contentViewsScience.setTextViewText(R.id.title, "黃金三分鐘");
@@ -225,9 +250,30 @@ public class G3MService extends Service {
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
+            //Toast.makeText(context, "NEXT_BUTTON", Toast.LENGTH_SHORT).show();
+
             if (intent.getAction().equals("NEXT_BUTTON")){
-                Log.d("Click", "true");
+                if(next == 0){
+                    onEnglishPushNotification();
+                }else if(next == 1){
+                    onSciencePushNotification(1);
+                }else{
+                    onSciencePushNotification(2);
+                }
+            }else if(intent.getAction().equals("SOUND_BUTTON")){
+                isReady = true;
+                mediaPlayer.start();
             }
+        }
+    };
+
+    private Runnable mediaPlayerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Cursor cursorQuestion = g3MSQLite.getEnglish(rowId);
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.parse("https://translate.google.com.tw/translate_tts?ie=UTF-8&q="+ cursorQuestion.getString(1) +"&tl=en&total=1&idx=0&textlen=5&client=t&prev=input&sa=N"));
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         }
     };
 }

@@ -17,7 +17,7 @@
                 android:id="@+id/icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@mipmap/ic_launcher"/>
+                android:background="@mipmap/g3m_icon"/>
 
             <TextView
                 android:id="@+id/title"
@@ -26,7 +26,7 @@
                 android:layout_gravity="center_vertical"
                 android:text="黃金三分鐘"
                 android:textSize="20dp"
-                android:textColor="@color/blue_1"/>
+                android:textColor="@color/BLUE_A400"/>
         </LinearLayout>
 
         <TextView
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:text="窮、少"
             android:textSize="18dp"
-            android:textColor="@color/blue_1"/>
+            android:textColor="@color/BLUE_A400"/>
         <TextView
             android:id="@+id/exampleEnglishText"
             android:layout_width="wrap_content"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:text="窮、少"
             android:textSize="18dp"
-            android:textColor="@color/blue_1"/>
+            android:textColor="@color/BLUE_A400"/>
     </LinearLayout>
 
     <LinearLayout
@@ -64,30 +64,30 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Button
-            android:id="@+id/moreButton"
-            android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:text="More"
-            android:textSize="20dp"
-            android:textColor="@color/white_1"
-            android:background="@drawable/button_blue"/>
-        <Button
             android:id="@+id/nextButton"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:text="Next"
+            android:text="下一個"
+            android:textSize="20dp"
+            android:textColor="@color/white_1"
+            android:background="@drawable/button_blue"/>
+        <Button
+            android:id="@+id/moreButton"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:text="詳細"
             android:textSize="20dp"
             android:textColor="@color/white_1"
             android:background="@drawable/button_blue"/>
         <Button
             android:id="@+id/soundButton"
             android:layout_width="70dp"
-            android:layout_height="45dp"
+            android:layout_height="43dp"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/button_blue"/>
+            android:background="@drawable/button_sound"/>
     </LinearLayout>
 </LinearLayout>
