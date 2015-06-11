@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,7 +12,12 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
+import com.kuo.gold3munite.DialogRecyclerFragment;
+import com.kuo.gold3munite.DialogTimePickerFragment;
+import com.kuo.gold3munite.MainActivity;
+import com.kuo.gold3munite.MaterialLinearLayout;
+import com.kuo.gold3munite.R;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -175,11 +180,11 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
 
     @Override
     public void onAnimationStart(int position) {
-        startTimeLayout.setClickable(false);
+        /*startTimeLayout.setClickable(false);
         endTimeLayout.setClickable(false);
         areaTimeLayout.setClickable(false);
         typeLayout.setClickable(false);
-        weekLayout.setClickable(false);
+        weekLayout.setClickable(false);*/
     }
 
     @Override
@@ -208,17 +213,17 @@ public class SettingFragment extends Fragment implements MaterialLinearLayout.On
                 dialogRecyclerFragment.show(getFragmentManager(), "dialogRecyclerFragment");
                 break;
             case 4:
-                String[] weekArray = {"日", "一", "二", "三", "四", "五", "六"};
+                String[] weekArray = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
                 dialogRecyclerFragment = DialogRecyclerFragment.newIntance(R.layout.list_item_checkbox, DialogRecyclerFragment.CHECK_BOX, weekArray, "重複", 2);
                 dialogRecyclerFragment.setTargetFragment(SettingFragment.this, 0);
                 dialogRecyclerFragment.show(getFragmentManager(), "dialogRecyclerFragment");
                 break;
         }
-        startTimeLayout.setClickable(true);
+        /*startTimeLayout.setClickable(true);
         endTimeLayout.setClickable(true);
         areaTimeLayout.setClickable(true);
         typeLayout.setClickable(true);
-        weekLayout.setClickable(true);
+        weekLayout.setClickable(true);*/
     }
 
     @Override

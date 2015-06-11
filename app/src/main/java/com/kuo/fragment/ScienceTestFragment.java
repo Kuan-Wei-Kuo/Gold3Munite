@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Service;
@@ -20,6 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.kuo.gold3munite.G3MSQLite;
+import com.kuo.gold3munite.MainActivity;
+import com.kuo.gold3munite.R;
 
 import java.util.Random;
 

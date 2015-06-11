@@ -40,7 +40,7 @@ public class DialogRecyclerFragment extends DialogFragment{
         void getRadioData(String typeText, int position);
     }
 
-    static DialogRecyclerFragment newIntance(int layoutId, int TYPE, String[] contentArrays, String title, int position){
+    public static DialogRecyclerFragment newIntance(int layoutId, int TYPE, String[] contentArrays, String title, int position){
 
         DialogRecyclerFragment dialogRecyclerFragment = new DialogRecyclerFragment();
 
@@ -83,10 +83,11 @@ public class DialogRecyclerFragment extends DialogFragment{
 
             for(int i = 0 ; i < contentArrays.length ; i++){
                 ListItem listItem = new ListItem();
-                listItem.chineseText = "星期" + contentArrays[i];
+                listItem.chineseText = contentArrays[i];
                 count[i] = false;
                 listItems.add(listItem);
             }
+
             g3MRecyclerAdapter = new G3MRecyclerAdapter(getArguments().getInt("layoutId"), listItems, G3MRecyclerAdapter.DIALOG_WEEK, null);
 
         }else if(getArguments().getInt("TYPE") == RADIO_BUTTON) {

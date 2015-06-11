@@ -30,9 +30,10 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private ViewHolder viewHolder;
     private List<ListItem> listItems = new ArrayList<ListItem>();
+    private OnItemClickListener onItemClickListener;
+
     private int layoutId;
     private int TYPE;
-    private OnItemClickListener onItemClickListener;
     private int onCheck = 0;
 
     public G3MRecyclerAdapter(int layoutId, List<ListItem> listItems, int TYPE, OnItemClickListener onItemClickListener){
@@ -154,18 +155,19 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
         }else if(TYPE == DAWER_LIST){
 
             holder.icon.setBackgroundResource(listItems.get(position).icon);
-            holder.icon.getBackground().setAlpha(150);
             holder.chineseText.setText(listItems.get(position).chineseText);
             holder.chineseText.setTextColor(holder.itemView.getResources().getColor(R.color.black_6));
+
+            int[] icon = {R.mipmap.g3m_unfocus_icon, R.mipmap.test_unfocus_icon, R.mipmap.statisics_unfocus_icon, R.mipmap.setting_unfocus_icon};
+
             if(!listItems.get(position).check){
                 holder.itemView.setClickable(true);
                 holder.itemView.setBackgroundResource(R.drawable.background_selector);
                 holder.chineseText.setTextColor(holder.itemView.getResources().getColor(R.color.black_6));
-                holder.icon.getBackground().setAlpha(150);
+                holder.icon.setBackgroundResource(icon[position]);
             }else{
                 holder.itemView.setClickable(false);
                 holder.itemView.setBackgroundResource(R.color.black_4);
-                holder.icon.getBackground().setAlpha(250);
                 holder.chineseText.setTextColor(holder.itemView.getResources().getColor(R.color.black_5));
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -194,6 +196,7 @@ public class G3MRecyclerAdapter extends RecyclerView.Adapter<ViewHolder> {
     public int getItemCount() {
         return listItems.size();
     }
+
     public List<ListItem> getListItems(){
         return this.listItems;
     }

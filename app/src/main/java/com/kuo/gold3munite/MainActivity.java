@@ -1,10 +1,7 @@
 package com.kuo.gold3munite;
 
-import android.annotation.TargetApi;
-import android.app.Notification;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,21 +12,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
-import android.transition.Explode;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
+
+import com.kuo.fragment.MainFragment;
+import com.kuo.fragment.SettingFragment;
+import com.kuo.fragment.StatisicsFragment;
+import com.kuo.fragment.TestFragment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,7 +41,6 @@ public class MainActivity extends ActionBarActivity{
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private OnMenuItemClick onMenuItemClick;
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private List<ListItem> listItems = new ArrayList<ListItem>();
@@ -60,10 +49,6 @@ public class MainActivity extends ActionBarActivity{
     private FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     private Fragment content;
     private MainFragment mainFragment;
-
-    public interface OnMenuItemClick{
-        void onMenuItemClick();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +118,7 @@ public class MainActivity extends ActionBarActivity{
 
         String[] title = {"首頁", "測驗", "統計", "設定"};
 
-        int[] icon = {R.mipmap.g3m_icon, R.mipmap.learn_icon, R.mipmap.physics_icon, R.mipmap.setting_icon};
+        int[] icon = {R.mipmap.g3m_icon, R.mipmap.test_icon, R.mipmap.statisics_icon, R.mipmap.setting_icon};
 
         for(int i = 0 ; i < 4 ; i++){
             ListItem listItem = new ListItem();

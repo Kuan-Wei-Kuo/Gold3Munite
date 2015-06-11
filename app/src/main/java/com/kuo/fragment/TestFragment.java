@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.fragment;
 
 import android.annotation.TargetApi;
 import android.database.Cursor;
@@ -9,11 +9,15 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+
+import com.kuo.gold3munite.G3MSQLite;
+import com.kuo.gold3munite.MainActivity;
+import com.kuo.gold3munite.MaterialLinearLayout;
+import com.kuo.gold3munite.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,7 +36,7 @@ import lecho.lib.hellocharts.view.LineChartView;
 /**
  * Created by User on 2015/4/2.
  */
-public class TestFragment extends Fragment implements MaterialLinearLayout.OnAnimationListener{
+public class TestFragment extends Fragment implements MaterialLinearLayout.OnAnimationListener {
 
     private LineChartView lineChartView;
     private MaterialLinearLayout englishLayout, mathLayout, physicsLayout;

@@ -21,10 +21,14 @@
     <!--Material Color-->
     <color name="BLUE_A700">#2962FF</color>
     <color name="BLUE_A400">#2979FF</color>
+    <color name="BLUE_A200">#90CAF9</color>
 
+    <color name="GREY_100">#F5F5F5</color>
+    <color name="GREY_300">#E0E0E0</color>
     <color name="GRAY_200">#EEEEEE</color>
     <color name="GRAY_900">#212121</color>
     <color name="GRAY_500">#9E9E9E</color>
+    <color name="GREY_50">#FAFAFA</color>
 
     <color name="PINKY_500">#E91E63</color>
     <color name="PINKY_300">#F06292</color>

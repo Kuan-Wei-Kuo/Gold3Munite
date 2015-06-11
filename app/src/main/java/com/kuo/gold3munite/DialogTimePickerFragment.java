@@ -35,7 +35,7 @@ public class DialogTimePickerFragment extends DialogFragment {
         void getTime(int hour, int minute, int position);
     }
 
-    static DialogTimePickerFragment newIntance(String title, int position){
+    public static DialogTimePickerFragment newIntance(String title, int position){
 
         DialogTimePickerFragment dialogTimePickerFragment = new DialogTimePickerFragment();
 
