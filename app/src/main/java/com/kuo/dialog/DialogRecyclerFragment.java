@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,8 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.TextView;
+
+import com.kuo.adapter.G3MRecyclerAdapter;
+import com.kuo.adapter.ListItem;
+import com.kuo.gold3munite.R;
 
 import java.util.ArrayList;
 import java.util.List;

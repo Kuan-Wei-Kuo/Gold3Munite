@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.fragment;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.kuo.gold3munite.G3MSQLite;
+import com.kuo.gold3munite.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

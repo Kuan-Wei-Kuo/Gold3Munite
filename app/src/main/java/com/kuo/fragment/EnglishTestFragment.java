@@ -27,10 +27,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kuo.gold3munite.DialogMessage;
+import com.kuo.dialog.DialogMessage;
 import com.kuo.gold3munite.G3MSQLite;
 import com.kuo.gold3munite.MainActivity;
-import com.kuo.gold3munite.MediaPlayerLoadingTask;
+import com.kuo.task.MediaPlayerLoadingTask;
 import com.kuo.gold3munite.R;
 
 import java.util.ArrayList;

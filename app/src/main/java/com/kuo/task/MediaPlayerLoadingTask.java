@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.task;
 
 import android.content.Context;
 import android.media.AudioManager;

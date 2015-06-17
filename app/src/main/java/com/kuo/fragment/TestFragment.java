@@ -16,7 +16,7 @@ import android.view.Window;
 
 import com.kuo.gold3munite.G3MSQLite;
 import com.kuo.gold3munite.MainActivity;
-import com.kuo.gold3munite.MaterialLinearLayout;
+import com.kuo.common.MaterialLinearLayout;
 import com.kuo.gold3munite.R;
 
 import java.text.SimpleDateFormat;

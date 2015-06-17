@@ -12,10 +12,10 @@ import android.widget.CheckBox;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.kuo.gold3munite.DialogRecyclerFragment;
-import com.kuo.gold3munite.DialogTimePickerFragment;
+import com.kuo.dialog.DialogRecyclerFragment;
+import com.kuo.dialog.DialogTimePickerFragment;
 import com.kuo.gold3munite.MainActivity;
-import com.kuo.gold3munite.MaterialLinearLayout;
+import com.kuo.common.MaterialLinearLayout;
 import com.kuo.gold3munite.R;
 
 import java.util.Arrays;

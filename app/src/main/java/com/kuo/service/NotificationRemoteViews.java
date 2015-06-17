@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.service;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
@@ -12,6 +12,11 @@ import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.widget.RemoteViews;
+
+import com.kuo.gold3munite.G3MSQLite;
+import com.kuo.gold3munite.MainActivity;
+import com.kuo.gold3munite.R;
+import com.kuo.task.MediaPlayerLoadingTask;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

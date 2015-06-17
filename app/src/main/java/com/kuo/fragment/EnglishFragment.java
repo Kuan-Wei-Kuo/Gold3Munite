@@ -1,32 +1,20 @@
 package com.kuo.fragment;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.media.Image;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.app.FragmentTransaction;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionInflater;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kuo.gold3munite.DetailEnglishActivity;
-import com.kuo.gold3munite.EnglishLoadingTask;
-import com.kuo.gold3munite.G3MRecyclerAdapter;
+import com.kuo.task.EnglishLoadingTask;
+import com.kuo.adapter.G3MRecyclerAdapter;
 import com.kuo.gold3munite.G3MSQLite;
-import com.kuo.gold3munite.ListItem;
+import com.kuo.adapter.ListItem;
 import com.kuo.gold3munite.R;
 
 import java.util.ArrayList;

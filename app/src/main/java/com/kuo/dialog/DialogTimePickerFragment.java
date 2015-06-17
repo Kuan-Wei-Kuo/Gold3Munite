@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.dialog;
 
 import android.content.res.Resources;
 import android.graphics.Paint;
@@ -10,11 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.kuo.gold3munite.R;
 
 import java.lang.reflect.Field;
 import java.util.Calendar;

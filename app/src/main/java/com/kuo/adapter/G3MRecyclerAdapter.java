@@ -1,15 +1,15 @@
-package com.kuo.gold3munite;
+package com.kuo.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import com.kuo.gold3munite.R;
 
 import java.util.ArrayList;
 import java.util.List;

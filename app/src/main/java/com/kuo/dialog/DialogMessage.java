@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.dialog;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.kuo.gold3munite.R;
 
 /**
  * Created by User on 2015/6/6.

@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.adapter;
 
 /**
  * Created by User on 2015/4/3.

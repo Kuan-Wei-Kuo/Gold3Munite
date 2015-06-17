@@ -9,12 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.kuo.gold3munite.G3MPagerAdapter;
+import com.kuo.adapter.G3MPagerAdapter;
 import com.kuo.gold3munite.G3MSQLite;
 import com.kuo.gold3munite.MainActivity;
 import com.kuo.gold3munite.R;
-import com.kuo.gold3munite.SlidingTabLayout;
-import com.kuo.gold3munite.StatisicsNotifyFragment;
+import com.kuo.common.SlidingTabLayout;
 
 import java.util.ArrayList;
 import java.util.List;

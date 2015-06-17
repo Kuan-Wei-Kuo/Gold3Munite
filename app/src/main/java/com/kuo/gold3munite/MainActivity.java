@@ -14,10 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.kuo.adapter.G3MRecyclerAdapter;
+import com.kuo.adapter.ListItem;
 import com.kuo.fragment.MainFragment;
 import com.kuo.fragment.SettingFragment;
 import com.kuo.fragment.StatisicsFragment;
 import com.kuo.fragment.TestFragment;
+import com.kuo.service.G3MService;
 
 import java.util.ArrayList;
 import java.util.HashSet;

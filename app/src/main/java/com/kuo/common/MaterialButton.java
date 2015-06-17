@@ -1,10 +1,9 @@
-package com.kuo.gold3munite;
+package com.kuo.common;
 
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +12,8 @@ import android.util.Property;
 import android.view.MotionEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+
+import com.kuo.gold3munite.R;
 
 /**
  * Created by User on 2015/4/21.

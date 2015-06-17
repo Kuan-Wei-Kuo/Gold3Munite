@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.adapter;
 
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;

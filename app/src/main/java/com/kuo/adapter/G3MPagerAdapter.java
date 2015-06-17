@@ -1,4 +1,4 @@
-package com.kuo.gold3munite;
+package com.kuo.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

@@ -1,26 +1,23 @@
-package com.kuo.gold3munite;
+package com.kuo.service;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.media.AudioManager;
+import android.location.Location;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
-import android.widget.RemoteViews;
-import android.widget.Toast;
+
+import com.kuo.gold3munite.DetailEnglishActivity;
+import com.kuo.gold3munite.DetailScienceActivity;
+import com.kuo.gold3munite.G3MSQLite;
+import com.kuo.gold3munite.MainActivity;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,29 +30,40 @@ import java.util.Random;
  */
 public class G3MService extends Service {
 
-    private Handler handler = new Handler();
-    private Calendar calendar;
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("kk:mm:ss");
-    private SharedPreferences settings;
+    private int next;
+    private int rowId;
+    private int[] typeArray = {0};
+
+    private boolean isSpeedGet;
+
+    private double speed;
+
     private Long stratTime;
     private Long currentTime;
     private Long tempTime;
     private Long minute;
     private Long hour;
-    private int[] typeArray = {0};
+
+    private static boolean pushState = false;
+    private boolean isReady = false;
+    private boolean startGPS=false;
+
+    private Handler handler = new Handler();
+    private Calendar calendar;
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("kk:mm:ss");
+    private SharedPreferences settings;
     private Object[] weekArrays;
     private Object[] typeArrays;
-    private static boolean pushState = false;
     private G3MSQLite g3MSQLite;
-    private int next;
-    private MediaPlayer mediaPlayer;
-    private int rowId;
-    private boolean isReady = false;
     private NotificationRemoteViews notificationRemoteViews;
+    private MapLocation mapLocation;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        mapLocation = new MapLocation(this);
+        mapLocation.setOnLocationListener(onLocationListener);
 
         g3MSQLite = new G3MSQLite(this);
         g3MSQLite.OpenDB();
@@ -101,6 +109,29 @@ public class G3MService extends Service {
             }
 
             handler.postDelayed(this, 1000);
+        }
+    };
+
+    private Runnable Speed= new Runnable() {
+
+        @Override
+        public void run() {
+            if (isSpeedGet) {
+                if (speed >= 45) {
+                    notificationRemoteViews.onEnglishRemoteViews();
+                    notificationRemoteViews.startNotification();
+                }
+                isSpeedGet = false;
+                startGPS = false;
+                handler.postDelayed(this, 30000);
+            } else {
+                if (startGPS) {
+                    handler.postDelayed(this, 1000);
+                } else {
+                    startGPS = true;
+                    handler.postDelayed(this, 1000);
+                }
+            }
         }
     };
 
@@ -163,6 +194,29 @@ public class G3MService extends Service {
         Random random = new Random();
         return random.nextInt(maxNumber);
     }
+
+    private MapLocation.OnLocationListener onLocationListener = new MapLocation.OnLocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            speed = location.getSpeed() * 3.6;   //*3.6  m/s 轉 km/h
+            isSpeedGet = location.hasSpeed();
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+    };
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
